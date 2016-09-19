@@ -86,7 +86,7 @@ private class FilteredSubscriber: Subscriber {
 }
 
 
-class ReduxStoreTest: CMDTestCase {
+class ReduxStoreTest: XCTestCase {
     
     private typealias TestReduxStore = Store<CounterState, TestReducer>
     private let reducer = TestReducer()
@@ -101,8 +101,8 @@ class ReduxStoreTest: CMDTestCase {
     func test_dispatch_action() {
         store.dispatch(CountAction.Increment)
         
-        expect(self.reducer.didHandleAction).toEventually(beTrue())
-        expect(self.reducer.state?.counter) == 1
+        XCTAssertTrue(reducer.didHandleAction)
+        XCTAssertEqual(reducer.state?.counter, 1)
     }
     
     func test_dispatch_actionCreator() {
@@ -111,39 +111,34 @@ class ReduxStoreTest: CMDTestCase {
         }
         store.dispatch(creator)
         
-        expect(self.reducer.didHandleAction).toEventually(beTrue())
-        expect(self.reducer.state?.counter) == 1
+        XCTAssertTrue(reducer.didHandleAction)
+        XCTAssertEqual(reducer.state?.counter, 1)
     }
     
     func test_subscribe() {
-        guard UIDevice.isIPhone() else {
-            // temporary short circuit.  Always fails on iPad due to autorotation exception
-            return
-        }
-        
         let subscriber = TestSubscriber()
         store.subscribe(subscriber)
         
-        expect(subscriber.lastStates.count).toEventually(equal(1))
-        expect(subscriber.lastStates.last?.counter) == 0
+        XCTAssertEqual(subscriber.lastStates.count, 1)
+        XCTAssertEqual(subscriber.lastStates.last?.counter, 0)
         
-        expect(subscriber.previousStates.count) == 1
+        XCTAssertEqual(subscriber.previousStates.count, 1)
         if let item = subscriber.previousStates.last,
            let state = item {
-            fail("expected nil state, got \(state)")
+            XCTFail("expected nil state, got \(state)")
         }
         
         self.store.dispatch(CountAction.Increment)
         
-        expect(subscriber.lastStates.count).toEventually(equal(2))
-        expect(subscriber.lastStates.last?.counter) == 1
+        XCTAssertEqual(subscriber.lastStates.count, 2)
+        XCTAssertEqual(subscriber.lastStates.last?.counter, 1)
+        XCTAssertEqual(subscriber.previousStates.count, 2)
         
-        expect(subscriber.previousStates.count) == 2
         if let item = subscriber.previousStates.last,
            let state = item {
-            expect(state.counter) == 0
+            XCTAssertEqual(state.counter, 0)
         } else {
-            fail("expected previous state, got \(subscriber.previousStates.last)")
+            XCTFail("expected previous state, got \(subscriber.previousStates.last)")
         }
     }
     
@@ -160,8 +155,8 @@ class ReduxStoreTest: CMDTestCase {
         
         store.dispatch(CountAction.Decrement)
         
-        expect(subscriber.message).toEventually(equal("Reducer did its job!"))
-        expect(subscriber.previousMessage) == "First Message"
+        XCTAssertEqual(subscriber.message, "Reducer did its job!")
+        XCTAssertEqual(subscriber.previousMessage, "First Message")
     }
     
     func test_subscribe_ignoresDuplicates() {
@@ -170,7 +165,7 @@ class ReduxStoreTest: CMDTestCase {
         store.subscribe(subscriber) // 2
         store.dispatch(CountAction.Increment) // 3, 4
         
-        expect(subscriber.lastStates.count).toNot(equal(4))
+        XCTAssertNotEqual(subscriber.lastStates.count, 4)
     }
     
     func test_unsubscribe() {
@@ -180,15 +175,10 @@ class ReduxStoreTest: CMDTestCase {
         
         store.dispatch(CountAction.Increment)
         
-        expect(subscriber.lastStates.count).toEventually(equal(1))
+        XCTAssertEqual(subscriber.lastStates.count, 1)
     }
     
     func test_raceConditions() {
-        guard UIDevice.isIPhone() else {
-            // temporary short circuit.  Always fails on iPad due to autorotation exception
-            return
-        }
-        
         let iters = 250
         
         let parent = UIViewController()
@@ -203,7 +193,7 @@ class ReduxStoreTest: CMDTestCase {
             parent.addChildViewController(child)
             parent.view.addSubview(child.view)
             
-            scheduleInBackground {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                 self.store.subscribe(child)
                 self.store.dispatch(creator)
                 self.store.dispatch(CountAction.Increment)
@@ -214,11 +204,11 @@ class ReduxStoreTest: CMDTestCase {
         
         let expected = "\(iters * 2)"
         
-        expect(subscribers.last?.label.text).toEventually(equal(expected), timeout: 10.0, pollInterval: 0.5, description: nil)
+        XCTAssertEqual(subscribers.last?.label.text, expected)
         
         for subscriber in subscribers[1..<iters] {
             
-            expect(subscriber.label.text) == expected
+            XCTAssertEqual(subscriber.label.text, expected)
         }
     }
 }

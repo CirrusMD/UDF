@@ -48,7 +48,7 @@ private class CodeReducer: Reducer {
 
 
 
-class CombinedReducerTest: CMDTestCase {
+class CombinedReducerTest: XCTestCase {
     
     private let combinedReducer = CombinedReducer<CombinedState> {
         $0.add(MessageReducer())
