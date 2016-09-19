@@ -14,9 +14,9 @@
 
 public class Store<State, RD: Reducer where RD.State == State> {
 
-    public typealias ActionDispatcher = ActionDispatcher<State>
+    public typealias Dispatcher = ActionDispatcher<State>
     
-    private typealias Subscription = Subscription<State>
+    private typealias Subscription = GenericSubscription<State>
 
     private var previousState: State?
     private var state: State
@@ -44,21 +44,21 @@ public class Store<State, RD: Reducer where RD.State == State> {
         _dispatch(action)
     }
 
-    public func dispatch(actionDispatcher: ActionDispatcher) {
-        actionDispatcher.create(currentState, _dispatch)
+    public func dispatch(actionDispatcher: Dispatcher) {
+        actionDispatcher.dispatch(currentState, _dispatch)
     }
 
     private func _dispatch(action: Action) {
         sync {
-            Log.debug("DISPATCHED ACTION: \(action)")
+            debugLog("DISPATCHED ACTION: \(action)")
             self.previousState = self.state
             let newState = self.reducer.handleAction(action, forState: self.state)
             self.state = newState
             
             if let prev = self.previousState {
-                Log.debug(debugDiff(prev, rhs: self.state))
+                debugLog(debugDiff(prev, rhs: self.state))
             } else {
-                Log.debug(debugDiff("", rhs: self.state))
+                debugLog(debugDiff("", rhs: self.state))
             }
             
             self.informSubscribers(self.previousState, current: newState)
@@ -69,10 +69,10 @@ public class Store<State, RD: Reducer where RD.State == State> {
         (subscriber: S, scope: (State -> ScopedState)?) {
         sync {
             if self.subscriptions.contains({ $0.subscriber === subscriber }) {
-                Log.debug("\(#file): \(#function): subscriber \(subscriber) is already registered, ignoring.")
+                debugLog("\(#file): \(#function): subscriber \(subscriber) is already registered, ignoring.")
                 return
             }
-            let subscription = Subscription<State>(subscriber: subscriber, scope: scope)
+            let subscription = Subscription(subscriber: subscriber, scope: scope)
             self.subscriptions.append(subscription)
             self.informSubscriber(subscription, previous: self.previousState, current: self.state)
         }
@@ -134,4 +134,15 @@ public class Store<State, RD: Reducer where RD.State == State> {
             subscription.subscriber?._updateState(prev, current: curr)
         }
     }
+}
+
+private func debugLog(message: String) {
+    #if DEBUG
+        print(#file, "[DEBUG]", message)
+    #endif
+}
+
+
+private func scheduleOnNextRunLoop(block: () -> Void) {
+    dispatch_async(dispatch_get_main_queue(), block)
 }

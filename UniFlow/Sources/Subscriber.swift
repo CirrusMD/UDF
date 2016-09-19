@@ -11,7 +11,7 @@
 //  https://github.com/ReSwift/ReSwift
 //
 
-internal struct Subscription<State> {
+internal struct GenericSubscription<State> {
     typealias ScopeFunc = (State) -> Any
     private(set) weak var subscriber: SubscriberType?
     let scope: ScopeFunc?
