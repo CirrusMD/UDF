@@ -9,7 +9,7 @@
 import UniFlow
 
 
-class FakeStore<State, RD: Reducer where RD.State == State>: Store<State, RD> {
+class FakeStore<State, RD: Reducer>: Store<State, RD> where RD.State == State {
     
     var lastActions: [Action] = []
     var lastAction: Action? {
@@ -34,25 +34,25 @@ class FakeStore<State, RD: Reducer where RD.State == State>: Store<State, RD> {
         return state
     }
     
-    override func dispatch(action: Action) {
+    override func dispatch(_ action: Action) {
         lastActions.append(action)
     }
     
-    override func dispatch(actionDispatcher: Dispatcher) {
+    override func dispatch(_ actionDispatcher: Dispatcher) {
         lastDispatchers.append(actionDispatcher)
     }
     
-    override func subscribe<ScopedState, S :Subscriber where S.State == ScopedState>(subscriber: S, scope: (State -> ScopedState)?) {
+    override func subscribe<ScopedState, S :Subscriber>(_ subscriber: S, scope: ((State) -> ScopedState)?) where S.State == ScopedState {
         subscribers.append(subscriber)
     }
     
-    override func subscribe<S :Subscriber where S.State == State>(subscriber: S) {
+    override func subscribe<S :Subscriber>(_ subscriber: S) where S.State == State {
         subscribers.append(subscriber)
     }
     
-    override func unSubscribe(subscriber: AnyObject) {
-        if let index = subscribers.indexOf({ return $0 === subscriber }) {
-            subscribers.removeAtIndex(index)
+    override func unSubscribe(_ subscriber: AnyObject) {
+        if let index = subscribers.index(where: { return $0 === subscriber }) {
+            subscribers.remove(at: index)
         }
     }
 }

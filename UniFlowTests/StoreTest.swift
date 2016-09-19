@@ -28,7 +28,7 @@ class TestReducer: Reducer {
     var state: CounterState?
     var expectation: XCTestExpectation?
     
-    func handleAction(action: Action, forState state: CounterState) -> CounterState {
+    func handle(action: Action, forState state: CounterState) -> CounterState {
         var state = state
         guard let countAction = action as? CountAction else {
             return state
@@ -56,10 +56,9 @@ class TestSubscriber: UIViewController, Subscriber {
     
     var lastStates: [CounterState] = []
     var previousStates: [CounterState?] = []
-    let label = UILabel(frame: CGRectMake(0, 0, 50, 50))
+    let label = UILabel(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
     
     var expectation: XCTestExpectation?
-    var fulfillOnce: dispatch_once_t = 0
    
     func updateState(previous: CounterState?, current: CounterState) {
         previousStates.append(previous)
@@ -103,21 +102,21 @@ class ReduxStoreTest: XCTestCase {
     }()
 
     func test_dispatch_action() {
-        reducer.expectation = expectationWithDescription(#function)
+        reducer.expectation = expectation(description: #function)
         store.dispatch(CountAction.Increment)
-        waitForExpectationsWithTimeout(1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
         
         XCTAssertTrue(reducer.didHandleAction)
         XCTAssertEqual(reducer.state?.counter, 1)
     }
     
     func test_dispatch_actionCreator() {
-        reducer.expectation = expectationWithDescription(#function)
+        reducer.expectation = expectation(description: #function)
         let creator = ActionDispatcher<CounterState> { state, dispatch in
             dispatch(CountAction.Increment)
         }
         store.dispatch(creator)
-        waitForExpectationsWithTimeout(1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
         
         XCTAssertTrue(reducer.didHandleAction)
         XCTAssertEqual(reducer.state?.counter, 1)
@@ -125,9 +124,9 @@ class ReduxStoreTest: XCTestCase {
     
     func test_subscribe() {
         let subscriber = TestSubscriber()
-        subscriber.expectation = expectationWithDescription(#function)
+        subscriber.expectation = expectation(description: #function)
         store.subscribe(subscriber)
-        waitForExpectationsWithTimeout(1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
         
         XCTAssertEqual(subscriber.lastStates.count, 1)
         XCTAssertEqual(subscriber.lastStates.last?.counter, 0)
@@ -138,9 +137,9 @@ class ReduxStoreTest: XCTestCase {
             XCTFail("expected nil state, got \(state)")
         }
         
-        subscriber.expectation = expectationWithDescription(#function)
+        subscriber.expectation = expectation(description: #function)
         store.dispatch(CountAction.Increment)
-        waitForExpectationsWithTimeout(1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
         
         XCTAssertEqual(subscriber.lastStates.count, 2)
         XCTAssertEqual(subscriber.lastStates.last?.counter, 1)
@@ -160,16 +159,16 @@ class ReduxStoreTest: XCTestCase {
         store = Store(reducer: reducer, initialState: state)
         
         let subscriber = FilteredSubscriber()
-        subscriber.expectation = expectationWithDescription(#function)
+        subscriber.expectation = expectation(description: #function)
         
         store.subscribe(subscriber) { parentState in
             return parentState.scopedState
         }
-        waitForExpectationsWithTimeout(1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
         
-        subscriber.expectation = expectationWithDescription(#function)
+        subscriber.expectation = expectation(description: #function)
         store.dispatch(CountAction.Decrement)
-        waitForExpectationsWithTimeout(1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
         
         XCTAssertEqual(subscriber.message, "Reducer did its job!")
         XCTAssertEqual(subscriber.previousMessage, "First Message")
@@ -186,13 +185,13 @@ class ReduxStoreTest: XCTestCase {
     
     func test_unsubscribe() {
         let subscriber = TestSubscriber()
-        subscriber.expectation = expectationWithDescription(#function)
+        subscriber.expectation = expectation(description: #function)
         store.subscribe(subscriber)
         store.unSubscribe(subscriber)
         
         store.dispatch(CountAction.Increment)
         
-        waitForExpectationsWithTimeout(1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
         
         XCTAssertEqual(subscriber.lastStates.count, 1)
     }
@@ -221,13 +220,13 @@ class ReduxStoreTest: XCTestCase {
         }
         
         let expected = "\(iters * 2)"
-        let expectation = expectationWithDescription(#function)
+        let exp = expectation(description: #function)
         scheduleInBackground {
             while subscribers.last?.label.text != expected {}
-            expectation.fulfill()
+            exp.fulfill()
         }
         
-        waitForExpectationsWithTimeout(5, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
         
         for subscriber in subscribers[1..<iters] {
             
@@ -235,7 +234,7 @@ class ReduxStoreTest: XCTestCase {
         }
     }
     
-    private func scheduleInBackground(block: () -> Void) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), block)
+    private func scheduleInBackground(block: @escaping () -> Void) {
+        DispatchQueue.global().async(execute: block)
     }
 }

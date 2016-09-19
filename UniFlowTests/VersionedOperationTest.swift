@@ -23,9 +23,9 @@ private func ==(lhs: TestVersionable, rhs: TestVersionable) -> Bool {
 }
 
 
-class ExclusiveOperationTest: XCTestCase {
+class VersionedOperationTest: XCTestCase {
     
-    let queue = NSOperationQueue()
+    let queue = OperationQueue()
     
     override func setUp() {
         super.setUp()
@@ -47,7 +47,7 @@ class ExclusiveOperationTest: XCTestCase {
             (key, version, false),
         ]
         
-        for (index, (key, version, expectation)) in tests.enumerate() {
+        for (index, (key, version, expectation)) in tests.enumerated() {
             var executed = false
             let op = VersionedOperation(key: key, version: version) {
                 executed = true

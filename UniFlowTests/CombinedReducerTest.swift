@@ -10,20 +10,20 @@ import XCTest
 import UniFlow
 
 
-private struct CombinedState {
+struct CombinedState {
     var message = ""
     var code = 0
 }
 
 
-private struct CombinedAction: Action {}
+struct CombinedAction: Action {}
 
 
-private class MessageReducer: Reducer {
+class MessageReducer: Reducer {
     
     typealias State = CombinedState
     
-    private func handleAction(action: Action, forState state: State) -> State {
+    func handle(action: Action, forState state: State) -> State {
         var state = state
         
         state.message = "You have been reduced, sir!"
@@ -33,11 +33,11 @@ private class MessageReducer: Reducer {
 }
 
 
-private class CodeReducer: Reducer {
+class CodeReducer: Reducer {
     
     typealias State = CombinedState
     
-    private func handleAction(action: Action, forState state: State) -> State {
+    func handle(action: Action, forState state: State) -> State {
         var state = state
         
         state.code = 99001
@@ -50,13 +50,13 @@ private class CodeReducer: Reducer {
 
 class CombinedReducerTest: XCTestCase {
     
-    private let combinedReducer = CombinedReducer<CombinedState> {
-        $0.add(MessageReducer())
-        $0.add(CodeReducer())
+    let combinedReducer = CombinedReducer<CombinedState> {
+        $0.add(reducer: MessageReducer())
+        $0.add(reducer: CodeReducer())
     }
 
     func test_handleAction() {
-        let state = combinedReducer.handleAction(CombinedAction(), forState: CombinedState())
+        let state = combinedReducer.handle(action: CombinedAction(), forState: CombinedState())
         
         XCTAssertEqual(state.message, "You have been reduced, sir!")
         XCTAssertEqual(state.code, 99001)
