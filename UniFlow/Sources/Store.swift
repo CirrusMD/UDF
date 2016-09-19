@@ -15,12 +15,12 @@
 open class Store<State, RD: Reducer> where RD.State == State {
 
     public typealias Dispatcher = ActionDispatcher<State>
-    
+
     fileprivate typealias Subscription = GenericSubscription<State>
 
     fileprivate var previousState: State?
     fileprivate var state: State
-    
+
     fileprivate let reducer: RD
     fileprivate var subscriptions: [Subscription] = []
 
@@ -54,18 +54,18 @@ open class Store<State, RD: Reducer> where RD.State == State {
             self.previousState = self.state
             let newState = self.reducer.handle(action: action, forState: self.state)
             self.state = newState
-            
+
             if let prev = self.previousState {
                 debugLog(debugDiff(lhs: prev, rhs: self.state))
             } else {
                 debugLog(debugDiff(lhs: "", rhs: self.state))
             }
-            
+
             self.informSubscribers(self.previousState, current: newState)
         }
     }
-    
-    open func subscribe<ScopedState, S:Subscriber>
+
+    open func subscribe<ScopedState, S: Subscriber>
         (_ subscriber: S, scope: ((State) -> ScopedState)?) where S.State == ScopedState {
         sync {
             if self.subscriptions.contains(where: { $0.subscriber === subscriber }) {
@@ -78,7 +78,7 @@ open class Store<State, RD: Reducer> where RD.State == State {
         }
     }
 
-    open func subscribe<S:Subscriber>(_ subscriber: S) where S.State == State {
+    open func subscribe<S: Subscriber>(_ subscriber: S) where S.State == State {
         subscribe(subscriber, scope: nil)
     }
 
@@ -99,12 +99,12 @@ open class Store<State, RD: Reducer> where RD.State == State {
     fileprivate func sync(_ block: @escaping () -> Void) {
         let sem = DispatchSemaphore(value: 0)
         let timeout = DispatchTime.now() + Double(Int64(10 * NSEC_PER_SEC)) / Double(NSEC_PER_SEC)
-        
+
         actionQueue.async {
             block()
             sem.signal()
         }
-        
+
         deadlockQueue.async {
             if sem.wait(timeout: timeout) == .timedOut {
                 fatalError("ReduxStore deadlock timeout. Did a reducer dispatch an action?")
@@ -116,11 +116,11 @@ open class Store<State, RD: Reducer> where RD.State == State {
         let valid = subscriptions.filter {
             return $0.subscriber != nil
         }
-        
+
         valid.forEach {
             self.informSubscriber($0, previous: self.previousState, current: self.state)
         }
-        
+
         subscriptions = valid
     }
 

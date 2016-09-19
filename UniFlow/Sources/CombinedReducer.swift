@@ -13,20 +13,20 @@
 
 public class CombinedReducer<StateType>: Reducer {
     public typealias builder = (CombinedReducer) -> Void
-    
+
     public init(_ build: builder) {
         build(self)
     }
-    
+
     fileprivate var reducers = [ReducerType]()
-    
+
     public func add<R: Reducer>(reducer: R) where R.State == StateType {
         reducers.append(reducer)
     }
-    
+
     //MARK: Reducer
     public typealias State = StateType
-    
+
     public func handle(action: Action, forState state: State) -> State {
         return reducers.reduce(state) { (acc, reducer) -> State in
             var acc = acc

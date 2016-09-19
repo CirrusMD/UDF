@@ -9,7 +9,7 @@
 public struct Version<T> {
     public let value: T
     fileprivate let uuid: String
-    
+
     public init(_ versionable: T) {
         uuid = UUID().uuidString
         value = versionable

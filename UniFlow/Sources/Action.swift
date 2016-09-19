@@ -18,18 +18,18 @@ public protocol Action {}
 
 
 public struct ActionDispatcher<State>: CustomStringConvertible {
-    
+
     public typealias GetState = () -> State
     public typealias CreateFunc = (GetState, DispatchFunc) -> Void
-    
+
     public let dispatch: CreateFunc
     fileprivate let identifier: String
-    
+
     public init(identifier: String = UUID().uuidString, createFunc: @escaping CreateFunc) {
         self.identifier = identifier
         self.dispatch = createFunc
     }
-    
+
     public var description: String {
         return "\(ActionDispatcher.self): \(identifier)"
     }
@@ -39,5 +39,3 @@ extension ActionDispatcher: Equatable {}
 public func == <T>(lhs: ActionDispatcher<T>, rhs: ActionDispatcher<T>) -> Bool {
     return lhs.identifier == rhs.identifier
 }
-
-

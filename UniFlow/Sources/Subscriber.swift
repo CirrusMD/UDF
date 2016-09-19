@@ -15,7 +15,7 @@ internal struct GenericSubscription<State> {
     typealias ScopeFunc = (State) -> Any
     fileprivate(set) weak var subscriber: SubscriberType?
     let scope: ScopeFunc?
-    
+
     init(subscriber: SubscriberType, scope: ScopeFunc?) {
         self.subscriber = subscriber
         self.scope = scope
