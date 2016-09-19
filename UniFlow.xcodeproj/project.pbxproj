@@ -7,9 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5AF0E6A435AE8795966D8F7C /* DebugDiff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AF0E1FE61617BF809F5B5FC /* DebugDiff.swift */; };
 		63B15DC31D903FFF00247B9B /* UniFlow.h in Headers */ = {isa = PBXBuildFile; fileRef = 63B15DC21D903FFF00247B9B /* UniFlow.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		63B15DCA1D903FFF00247B9B /* UniFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63B15DBF1D903FFF00247B9B /* UniFlow.framework */; };
-		63B15DCF1D903FFF00247B9B /* UniFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B15DCE1D903FFF00247B9B /* UniFlowTests.swift */; };
+		63B15DDF1D904B6F00247B9B /* CombinedReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B15DD91D904B6F00247B9B /* CombinedReducer.swift */; };
+		63B15DE11D904B6F00247B9B /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B15DDB1D904B6F00247B9B /* Action.swift */; };
+		63B15DE21D904B6F00247B9B /* Reducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B15DDC1D904B6F00247B9B /* Reducer.swift */; };
+		63B15DE31D904B6F00247B9B /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B15DDD1D904B6F00247B9B /* Store.swift */; };
+		63B15DE41D904B6F00247B9B /* Subscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B15DDE1D904B6F00247B9B /* Subscriber.swift */; };
+		63B15DE91D904C6C00247B9B /* CombinedReducerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B15DE61D904C6C00247B9B /* CombinedReducerTest.swift */; };
+		63B15DEA1D904C6C00247B9B /* FakeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B15DE71D904C6C00247B9B /* FakeStore.swift */; };
+		63B15DEB1D904C6C00247B9B /* StoreTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B15DE81D904C6C00247B9B /* StoreTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -23,12 +31,20 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5AF0E1FE61617BF809F5B5FC /* DebugDiff.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugDiff.swift; sourceTree = "<group>"; };
 		63B15DBF1D903FFF00247B9B /* UniFlow.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UniFlow.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63B15DC21D903FFF00247B9B /* UniFlow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UniFlow.h; sourceTree = "<group>"; };
 		63B15DC41D903FFF00247B9B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		63B15DC91D903FFF00247B9B /* UniFlowTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UniFlowTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		63B15DCE1D903FFF00247B9B /* UniFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniFlowTests.swift; sourceTree = "<group>"; };
 		63B15DD01D903FFF00247B9B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		63B15DD91D904B6F00247B9B /* CombinedReducer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CombinedReducer.swift; sourceTree = "<group>"; };
+		63B15DDB1D904B6F00247B9B /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
+		63B15DDC1D904B6F00247B9B /* Reducer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reducer.swift; sourceTree = "<group>"; };
+		63B15DDD1D904B6F00247B9B /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
+		63B15DDE1D904B6F00247B9B /* Subscriber.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Subscriber.swift; sourceTree = "<group>"; };
+		63B15DE61D904C6C00247B9B /* CombinedReducerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CombinedReducerTest.swift; sourceTree = "<group>"; };
+		63B15DE71D904C6C00247B9B /* FakeStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeStore.swift; sourceTree = "<group>"; };
+		63B15DE81D904C6C00247B9B /* StoreTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,12 +66,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5AF0E1EA81DAC4DE899DF63E /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				5AF0E1FE61617BF809F5B5FC /* DebugDiff.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		63B15DB51D903FFF00247B9B = {
 			isa = PBXGroup;
 			children = (
+				63B15DC01D903FFF00247B9B /* Products */,
 				63B15DC11D903FFF00247B9B /* UniFlow */,
 				63B15DCD1D903FFF00247B9B /* UniFlowTests */,
-				63B15DC01D903FFF00247B9B /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -71,8 +95,9 @@
 		63B15DC11D903FFF00247B9B /* UniFlow */ = {
 			isa = PBXGroup;
 			children = (
-				63B15DC21D903FFF00247B9B /* UniFlow.h */,
+				63B15DE51D904B8E00247B9B /* Sources */,
 				63B15DC41D903FFF00247B9B /* Info.plist */,
+				63B15DC21D903FFF00247B9B /* UniFlow.h */,
 			);
 			path = UniFlow;
 			sourceTree = "<group>";
@@ -80,10 +105,25 @@
 		63B15DCD1D903FFF00247B9B /* UniFlowTests */ = {
 			isa = PBXGroup;
 			children = (
-				63B15DCE1D903FFF00247B9B /* UniFlowTests.swift */,
+				63B15DE61D904C6C00247B9B /* CombinedReducerTest.swift */,
+				63B15DE71D904C6C00247B9B /* FakeStore.swift */,
+				63B15DE81D904C6C00247B9B /* StoreTest.swift */,
 				63B15DD01D903FFF00247B9B /* Info.plist */,
 			);
 			path = UniFlowTests;
+			sourceTree = "<group>";
+		};
+		63B15DE51D904B8E00247B9B /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				63B15DD91D904B6F00247B9B /* CombinedReducer.swift */,
+				63B15DDB1D904B6F00247B9B /* Action.swift */,
+				63B15DDC1D904B6F00247B9B /* Reducer.swift */,
+				63B15DDD1D904B6F00247B9B /* Store.swift */,
+				63B15DDE1D904B6F00247B9B /* Subscriber.swift */,
+				5AF0E1EA81DAC4DE899DF63E /* Utils */,
+			);
+			path = Sources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -194,6 +234,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63B15DE11D904B6F00247B9B /* Action.swift in Sources */,
+				63B15DDF1D904B6F00247B9B /* CombinedReducer.swift in Sources */,
+				63B15DE31D904B6F00247B9B /* Store.swift in Sources */,
+				63B15DE41D904B6F00247B9B /* Subscriber.swift in Sources */,
+				63B15DE21D904B6F00247B9B /* Reducer.swift in Sources */,
+				5AF0E6A435AE8795966D8F7C /* DebugDiff.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -201,7 +247,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				63B15DCF1D903FFF00247B9B /* UniFlowTests.swift in Sources */,
+				63B15DE91D904C6C00247B9B /* CombinedReducerTest.swift in Sources */,
+				63B15DEA1D904C6C00247B9B /* FakeStore.swift in Sources */,
+				63B15DEB1D904C6C00247B9B /* StoreTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -310,6 +358,7 @@
 		63B15DD41D903FFF00247B9B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -320,12 +369,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.cirrusmd.UniFlow;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		63B15DD51D903FFF00247B9B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -342,16 +393,19 @@
 		63B15DD71D903FFF00247B9B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = UniFlowTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cirrusmd.UniFlowTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		63B15DD81D903FFF00247B9B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = UniFlowTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cirrusmd.UniFlowTests;
@@ -378,6 +432,7 @@
 				63B15DD51D903FFF00247B9B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		63B15DD61D903FFF00247B9B /* Build configuration list for PBXNativeTarget "UniFlowTests" */ = {
 			isa = XCConfigurationList;
@@ -386,6 +441,7 @@
 				63B15DD81D903FFF00247B9B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
