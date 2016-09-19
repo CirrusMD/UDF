@@ -23,9 +23,9 @@ public struct ActionDispatcher<State>: CustomStringConvertible {
     public typealias CreateFunc = (GetState, DispatchFunc) -> Void
     
     public let dispatch: CreateFunc
-    private let identifier: String
+    fileprivate let identifier: String
     
-    public init(identifier: String = NSUUID().UUIDString, createFunc: CreateFunc) {
+    public init(identifier: String = UUID().uuidString, createFunc: @escaping CreateFunc) {
         self.identifier = identifier
         self.dispatch = createFunc
     }

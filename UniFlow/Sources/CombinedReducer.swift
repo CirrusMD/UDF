@@ -18,19 +18,19 @@ public class CombinedReducer<StateType>: Reducer {
         build(self)
     }
     
-    private var reducers = [ReducerType]()
+    fileprivate var reducers = [ReducerType]()
     
-    public func add<R: Reducer where R.State == StateType>(reducer: R) {
+    public func add<R: Reducer>(reducer: R) where R.State == StateType {
         reducers.append(reducer)
     }
     
     //MARK: Reducer
     public typealias State = StateType
     
-    public func handleAction(action: Action, forState state: State) -> State {
+    public func handle(action: Action, forState state: State) -> State {
         return reducers.reduce(state) { (acc, reducer) -> State in
             var acc = acc
-            if let newState = reducer._handleAction(action, forState: acc) as? State {
+            if let newState = reducer._handle(action: action, forState: acc) as? State {
                 acc = newState
             }
             return acc

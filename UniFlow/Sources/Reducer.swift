@@ -11,23 +11,23 @@
 //
 
 public protocol ReducerType {
-    func _handleAction(action: Action, forState state: Any) -> Any
+    func _handle(action: Action, forState state: Any) -> Any
 }
 
 
 public protocol Reducer: ReducerType {
     associatedtype State
 
-    func handleAction(action: Action, forState state: State) -> State
+    func handle(action: Action, forState state: State) -> State
 }
 
 
 extension Reducer {
-    public func _handleAction(action: Action, forState state: Any) -> Any {
+    public func _handle(action: Action, forState state: Any) -> Any {
         guard let typedState = state as? State else {
             assertionFailure("Reducer \(self) handled unexpected state \(state)")
             return state
         }
-        return handleAction(action, forState: typedState)
+        return handle(action: action, forState: typedState)
     }
 }

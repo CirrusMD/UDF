@@ -13,7 +13,7 @@
 
 internal struct GenericSubscription<State> {
     typealias ScopeFunc = (State) -> Any
-    private(set) weak var subscriber: SubscriberType?
+    fileprivate(set) weak var subscriber: SubscriberType?
     let scope: ScopeFunc?
     
     init(subscriber: SubscriberType, scope: ScopeFunc?) {
@@ -38,7 +38,7 @@ extension Subscriber {
     public func _updateState(previous: Any?, current: Any) {
         let previous = previous as? State
         if let current = current as? State {
-            updateState(previous, current: current)
+            updateState(previous: previous, current: current)
         } else {
             assertionFailure("Redux subscriber \(self) received unexpected state \(current)")
         }

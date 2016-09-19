@@ -7,21 +7,21 @@
 //
 
 
-public class VersionedOperation<T>: NSOperation {
+open class VersionedOperation<T>: Operation {
 
-    private let key: TrackableKey
-    private let version: Version<T>
-    private let task: () -> Void
+    fileprivate let key: TrackableKey
+    fileprivate let version: Version<T>
+    fileprivate let task: () -> Void
     
-    public init(key: AnyObject, version: Version<T>, task: () -> Void) {
+    public init(key: AnyObject, version: Version<T>, task: @escaping () -> Void) {
         self.key = TrackableKey(key)
         self.task = task
         self.version = version
         super.init()
     }
     
-    public override func main() {
-        guard !cancelled && key.objectRef != nil else {
+    open override func main() {
+        guard !isCancelled && key.objectRef != nil else {
             return
         }
         
@@ -48,16 +48,16 @@ private func ==(lhs: TrackableKey, rhs: TrackableKey) -> Bool {
     return lhs.hashValue == rhs.hashValue
 }
 
-private let mutex = dispatch_queue_create("com.cirrusmd.exclusiveOperation", DISPATCH_QUEUE_CONCURRENT)
+private let mutex = DispatchQueue(label: "com.cirrusmd.exclusiveOperation", attributes: DispatchQueue.Attributes.concurrent)
 private var HISTORY = [TrackableKey: [Int: Bool]]()
 
-private func versionExists<T>(key: TrackableKey, version: Version<T>) -> Bool {
+private func versionExists<T>(_ key: TrackableKey, version: Version<T>) -> Bool {
     defer {
         cleanUpHistory()
     }
     
     var executed = false
-    dispatch_barrier_sync(mutex) {
+    mutex.sync(flags: .barrier, execute: {
         executed = HISTORY[key]?[version.hashValue] ?? false
         
         if !executed {
@@ -65,14 +65,14 @@ private func versionExists<T>(key: TrackableKey, version: Version<T>) -> Bool {
             versions[version.hashValue] = true
             HISTORY[key] = versions
         }
-    }
+    }) 
     return executed
 }
 
 private func cleanUpHistory() {
-    dispatch_async(mutex) { 
+    mutex.async { 
         HISTORY.keys.filter({ $0.objectRef == nil}).forEach {
-            HISTORY.removeValueForKey($0)
+            HISTORY.removeValue(forKey: $0)
         }
     }
 }

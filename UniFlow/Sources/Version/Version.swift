@@ -8,10 +8,10 @@
 
 public struct Version<T> {
     public let value: T
-    private let uuid: String
+    fileprivate let uuid: String
     
     public init(_ versionable: T) {
-        uuid = NSUUID().UUIDString
+        uuid = UUID().uuidString
         value = versionable
     }
 }

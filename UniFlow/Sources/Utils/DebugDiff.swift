@@ -8,12 +8,12 @@
 func debugDiff(lhs: Any, rhs: Any) -> String {
     
     var lhsString = ""
-    debugPrint(lhs, toStream: &lhsString)
-    let lhsLines = lhsString.componentsSeparatedByCharactersInSet(NSCharacterSet.newlineCharacterSet())
+    debugPrint(lhs, to: &lhsString)
+    let lhsLines = lhsString.components(separatedBy: CharacterSet.newlines)
     
     var rhsString = ""
-    debugPrint(rhs, toStream: &rhsString)
-    let rhsLines = rhsString.componentsSeparatedByCharactersInSet(NSCharacterSet.newlineCharacterSet())
+    debugPrint(rhs, to: &rhsString)
+    let rhsLines = rhsString.components(separatedBy: CharacterSet.newlines)
     
     let diffText =  zip(lhsLines, rhsLines).reduce("") { (acc, linePair: (String, String)) -> String in
         var acc = acc
