@@ -22,18 +22,37 @@ UniFlow attempts to capture the **transition** between states. Therefore, your v
 ## Features
 * Thread safe
 * Non-blocking
-* Deadlock detection
+* Deadlock detection (but needs improvement)
+* Subscribers do not have to unsubscribe (but it's recommended)
+* Safe to call subscribe multiple times. UniFlow will only subscribe an object once
+
+## Advantages and Tradeoffs
+### Advantages
+* Use plain old Cocoa or any 3rd party solution of your choice to build your view hierarchy
+* Limits communication between parent and child view controllers, so you can use child view controllers liberally.
+* Dispatching
+
+### Tradeoffs
+* All tradeoffs associated with the Observer pattern. It may be hard to see cause and effect. UniFlow's debug logging attempts to help you trace cause and effect.
+* The `previous` state in `updateState(previous: current:)` is nil only for the initial state. (i.e. before any actions are dispatched). It is non-nil after that. Having `previous` as optional is not ideal
+  
+### Best Practices
+* Reducers should do their work quickly.
+* Reducers should be free of side effects.
+* Limit derived state in your state tree.
 
 ## Gotchas
-* Reducers do their work on a background queue.
-* Don't subscribe in an `init`. UniFlow will be stable, but you will probably.
-* Don't unsubscribe in a `deinit`. This is unstable and may crash because the subscriber attempts to unsubscribe as it's deallocated.
+* Reducers do their work on a background queue. (Although, this is a feature to keep dispatching non-blocking)
+* Don't subscribe in an `init`. UniFlow should work as intended but you could flood the subscriber pool with many unnecessary subscribers.
+* Don't unsubscribe in a `deinit`. This is unstable and may crash because the subscriber attempts to unsubscribe as it's deallocated. (Working to fix this.)
+* Don't mix poor man's diffing using `previous` and `current` states with `Version`ed values.
 
 ###TODO
 Near future:
+* For real documentation
 * config options
 * middleware
 * macOS support
 
-Far Future:
+Sometime in the Future:
 * time travel debugging
