@@ -50,10 +50,7 @@ class CodeReducer: Reducer {
 
 class CombinedReducerTest: XCTestCase {
 
-    let combinedReducer = CombinedReducer<CombinedState> {
-        $0.add(reducer: MessageReducer())
-        $0.add(reducer: CodeReducer())
-    }
+    let combinedReducer = CombinedReducer<CombinedState>([MessageReducer(), CodeReducer()])
 
     func test_handleAction() {
         let state = combinedReducer.handle(action: CombinedAction(), forState: CombinedState())
