@@ -75,7 +75,9 @@ open class Store<State, RD: Reducer> where RD.State == State {
             }
             let subscription = Subscription(subscriber: subscriber, scope: scope)
             self.subscriptions.append(subscription)
-            self.informSubscriber(subscription, previous: self.previousState, current: self.state)
+            scheduleOnNextRunLoop {
+                self.informSubscriber(subscription, previous: self.previousState, current: self.state)
+            }
         }
     }
 
@@ -118,22 +120,22 @@ open class Store<State, RD: Reducer> where RD.State == State {
             return $0.subscriber != nil
         }
 
-        valid.forEach {
-            self.informSubscriber($0, previous: self.previousState, current: self.state)
+        scheduleOnNextRunLoop {
+            valid.forEach {
+                self.informSubscriber($0, previous: self.previousState, current: self.state)
+            }
         }
-
+        
         subscriptions = valid
     }
 
     fileprivate func informSubscriber(_ subscription: Subscription, previous: State?, current: State) {
-        scheduleOnNextRunLoop {
-            var prev: Any? = nil
-            if let previous = previous {
-                prev = subscription.scope?(previous) ?? previous
-            }
-            let curr = subscription.scope?(current) ?? current
-            subscription.subscriber?._updateState(previous: prev, current: curr)
+        var prev: Any? = nil
+        if let previous = previous {
+            prev = subscription.scope?(previous) ?? previous
         }
+        let curr = subscription.scope?(current) ?? current
+        subscription.subscriber?._updateState(previous: prev, current: curr)
     }
 }
 
