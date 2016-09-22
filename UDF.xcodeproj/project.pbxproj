@@ -12,8 +12,8 @@
 		632B57161D90630400034B9E /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B57141D90630400034B9E /* Version.swift */; };
 		632B57191D90632700034B9E /* VersionedOperationTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B57171D90632700034B9E /* VersionedOperationTest.swift */; };
 		632B571A1D90632700034B9E /* VersionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B57181D90632700034B9E /* VersionTest.swift */; };
-		63B15DC31D903FFF00247B9B /* UniFlow.h in Headers */ = {isa = PBXBuildFile; fileRef = 63B15DC21D903FFF00247B9B /* UniFlow.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		63B15DCA1D903FFF00247B9B /* UniFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63B15DBF1D903FFF00247B9B /* UniFlow.framework */; };
+		63B15DC31D903FFF00247B9B /* UDF.h in Headers */ = {isa = PBXBuildFile; fileRef = 63B15DC21D903FFF00247B9B /* UDF.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		63B15DCA1D903FFF00247B9B /* UDF.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63B15DBF1D903FFF00247B9B /* UDF.framework */; };
 		63B15DDF1D904B6F00247B9B /* CombinedReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B15DD91D904B6F00247B9B /* CombinedReducer.swift */; };
 		63B15DE11D904B6F00247B9B /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B15DDB1D904B6F00247B9B /* Action.swift */; };
 		63B15DE21D904B6F00247B9B /* Reducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B15DDC1D904B6F00247B9B /* Reducer.swift */; };
@@ -30,7 +30,7 @@
 			containerPortal = 63B15DB61D903FFF00247B9B /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 63B15DBE1D903FFF00247B9B;
-			remoteInfo = UniFlow;
+			remoteInfo = UDF;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -40,10 +40,10 @@
 		632B57141D90630400034B9E /* Version.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
 		632B57171D90632700034B9E /* VersionedOperationTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersionedOperationTest.swift; sourceTree = "<group>"; };
 		632B57181D90632700034B9E /* VersionTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersionTest.swift; sourceTree = "<group>"; };
-		63B15DBF1D903FFF00247B9B /* UniFlow.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UniFlow.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		63B15DC21D903FFF00247B9B /* UniFlow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UniFlow.h; sourceTree = "<group>"; };
+		63B15DBF1D903FFF00247B9B /* UDF.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UDF.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		63B15DC21D903FFF00247B9B /* UDF.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UDF.h; sourceTree = "<group>"; };
 		63B15DC41D903FFF00247B9B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		63B15DC91D903FFF00247B9B /* UniFlowTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UniFlowTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		63B15DC91D903FFF00247B9B /* UDFTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UDFTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		63B15DD01D903FFF00247B9B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		63B15DD91D904B6F00247B9B /* CombinedReducer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CombinedReducer.swift; sourceTree = "<group>"; };
 		63B15DDB1D904B6F00247B9B /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
@@ -67,7 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				63B15DCA1D903FFF00247B9B /* UniFlow.framework in Frameworks */,
+				63B15DCA1D903FFF00247B9B /* UDF.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,11 +82,20 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		6316692F1D944742009E3D5E /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				63B15DC41D903FFF00247B9B /* Info.plist */,
+				63B15DC21D903FFF00247B9B /* UDF.h */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
 		632B57121D9062E600034B9E /* Version */ = {
 			isa = PBXGroup;
 			children = (
-				632B57131D90630400034B9E /* VersionedOperation.swift */,
 				632B57141D90630400034B9E /* Version.swift */,
+				632B57131D90630400034B9E /* VersionedOperation.swift */,
 			);
 			path = Version;
 			sourceTree = "<group>";
@@ -95,41 +104,32 @@
 			isa = PBXGroup;
 			children = (
 				63B15DC01D903FFF00247B9B /* Products */,
-				63B15DC11D903FFF00247B9B /* UniFlow */,
-				63B15DCD1D903FFF00247B9B /* UniFlowTests */,
+				63B15DE51D904B8E00247B9B /* Sources */,
+				6316692F1D944742009E3D5E /* Support */,
+				63B15DCD1D903FFF00247B9B /* UDFTests */,
 			);
 			sourceTree = "<group>";
 		};
 		63B15DC01D903FFF00247B9B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				63B15DBF1D903FFF00247B9B /* UniFlow.framework */,
-				63B15DC91D903FFF00247B9B /* UniFlowTests.xctest */,
+				63B15DBF1D903FFF00247B9B /* UDF.framework */,
+				63B15DC91D903FFF00247B9B /* UDFTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		63B15DC11D903FFF00247B9B /* UniFlow */ = {
-			isa = PBXGroup;
-			children = (
-				63B15DE51D904B8E00247B9B /* Sources */,
-				63B15DC41D903FFF00247B9B /* Info.plist */,
-				63B15DC21D903FFF00247B9B /* UniFlow.h */,
-			);
-			path = UniFlow;
-			sourceTree = "<group>";
-		};
-		63B15DCD1D903FFF00247B9B /* UniFlowTests */ = {
+		63B15DCD1D903FFF00247B9B /* UDFTests */ = {
 			isa = PBXGroup;
 			children = (
 				63B15DE61D904C6C00247B9B /* CombinedReducerTest.swift */,
-				632B57171D90632700034B9E /* VersionedOperationTest.swift */,
 				63B15DE71D904C6C00247B9B /* FakeStore.swift */,
 				63B15DD01D903FFF00247B9B /* Info.plist */,
 				63B15DE81D904C6C00247B9B /* StoreTest.swift */,
 				632B57181D90632700034B9E /* VersionTest.swift */,
+				632B57171D90632700034B9E /* VersionedOperationTest.swift */,
 			);
-			path = UniFlowTests;
+			path = UDFTests;
 			sourceTree = "<group>";
 		};
 		63B15DE51D904B8E00247B9B /* Sources */ = {
@@ -153,16 +153,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				63B15DC31D903FFF00247B9B /* UniFlow.h in Headers */,
+				63B15DC31D903FFF00247B9B /* UDF.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		63B15DBE1D903FFF00247B9B /* UniFlow */ = {
+		63B15DBE1D903FFF00247B9B /* UDF */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 63B15DD31D903FFF00247B9B /* Build configuration list for PBXNativeTarget "UniFlow" */;
+			buildConfigurationList = 63B15DD31D903FFF00247B9B /* Build configuration list for PBXNativeTarget "UDF" */;
 			buildPhases = (
 				63B15DBA1D903FFF00247B9B /* Sources */,
 				63B15DBB1D903FFF00247B9B /* Frameworks */,
@@ -173,14 +173,14 @@
 			);
 			dependencies = (
 			);
-			name = UniFlow;
-			productName = UniFlow;
-			productReference = 63B15DBF1D903FFF00247B9B /* UniFlow.framework */;
+			name = UDF;
+			productName = UDF;
+			productReference = 63B15DBF1D903FFF00247B9B /* UDF.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		63B15DC81D903FFF00247B9B /* UniFlowTests */ = {
+		63B15DC81D903FFF00247B9B /* UDFTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 63B15DD61D903FFF00247B9B /* Build configuration list for PBXNativeTarget "UniFlowTests" */;
+			buildConfigurationList = 63B15DD61D903FFF00247B9B /* Build configuration list for PBXNativeTarget "UDFTests" */;
 			buildPhases = (
 				63B15DC51D903FFF00247B9B /* Sources */,
 				63B15DC61D903FFF00247B9B /* Frameworks */,
@@ -191,9 +191,9 @@
 			dependencies = (
 				63B15DCC1D903FFF00247B9B /* PBXTargetDependency */,
 			);
-			name = UniFlowTests;
-			productName = UniFlowTests;
-			productReference = 63B15DC91D903FFF00247B9B /* UniFlowTests.xctest */;
+			name = UDFTests;
+			productName = UDFTests;
+			productReference = 63B15DC91D903FFF00247B9B /* UDFTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -218,7 +218,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 63B15DB91D903FFF00247B9B /* Build configuration list for PBXProject "UniFlow" */;
+			buildConfigurationList = 63B15DB91D903FFF00247B9B /* Build configuration list for PBXProject "UDF" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -230,8 +230,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				63B15DBE1D903FFF00247B9B /* UniFlow */,
-				63B15DC81D903FFF00247B9B /* UniFlowTests */,
+				63B15DBE1D903FFF00247B9B /* UDF */,
+				63B15DC81D903FFF00247B9B /* UDFTests */,
 			);
 		};
 /* End PBXProject section */
@@ -286,7 +286,7 @@
 /* Begin PBXTargetDependency section */
 		63B15DCC1D903FFF00247B9B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 63B15DBE1D903FFF00247B9B /* UniFlow */;
+			target = 63B15DBE1D903FFF00247B9B /* UDF */;
 			targetProxy = 63B15DCB1D903FFF00247B9B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -398,10 +398,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = UniFlow/Info.plist;
+				INFOPLIST_FILE = Support/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.cirrusmd.UniFlow;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cirrusmd.udf;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -419,10 +419,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = UniFlow/Info.plist;
+				INFOPLIST_FILE = Support/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.cirrusmd.UniFlow;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cirrusmd.udf;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
@@ -434,9 +434,9 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = DL5M889URM;
-				INFOPLIST_FILE = UniFlowTests/Info.plist;
+				INFOPLIST_FILE = UDFTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.cirrusmd.UniFlowTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cirrusmd.udfTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
@@ -448,9 +448,9 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = DL5M889URM;
-				INFOPLIST_FILE = UniFlowTests/Info.plist;
+				INFOPLIST_FILE = UDFTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.cirrusmd.UniFlowTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cirrusmd.udfTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -459,7 +459,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		63B15DB91D903FFF00247B9B /* Build configuration list for PBXProject "UniFlow" */ = {
+		63B15DB91D903FFF00247B9B /* Build configuration list for PBXProject "UDF" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				63B15DD11D903FFF00247B9B /* Debug */,
@@ -468,7 +468,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		63B15DD31D903FFF00247B9B /* Build configuration list for PBXNativeTarget "UniFlow" */ = {
+		63B15DD31D903FFF00247B9B /* Build configuration list for PBXNativeTarget "UDF" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				63B15DD41D903FFF00247B9B /* Debug */,
@@ -477,7 +477,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		63B15DD61D903FFF00247B9B /* Build configuration list for PBXNativeTarget "UniFlowTests" */ = {
+		63B15DD61D903FFF00247B9B /* Build configuration list for PBXNativeTarget "UDFTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				63B15DD71D903FFF00247B9B /* Debug */,

@@ -6,6 +6,9 @@
 //  Copyright © 2016 CirrusMD. All rights reserved.
 //
 
+import Foundation
+
+
 public struct Version<T> {
     public let value: T
     fileprivate let uuid: String

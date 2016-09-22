@@ -11,6 +11,9 @@
 //  https://github.com/ReSwift/ReSwift
 //
 
+import Foundation
+
+
 public protocol Action {}
 
 

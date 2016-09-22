@@ -10,6 +10,7 @@
 //  Copyright © 2015 DigiTales. All rights reserved.
 //  https://github.com/ReSwift/ReSwift
 //
+import Dispatch
 
 
 open class Store<State, RD: Reducer> where RD.State == State {

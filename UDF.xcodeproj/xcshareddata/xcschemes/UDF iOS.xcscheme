@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "63B15DBE1D903FFF00247B9B"
-               BuildableName = "UniFlow.framework"
-               BlueprintName = "UniFlow"
-               ReferencedContainer = "container:UniFlow.xcodeproj">
+               BuildableName = "UDF.framework"
+               BlueprintName = "UDF"
+               ReferencedContainer = "container:UDF.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "63B15DC81D903FFF00247B9B"
-               BuildableName = "UniFlowTests.xctest"
-               BlueprintName = "UniFlowTests"
-               ReferencedContainer = "container:UniFlow.xcodeproj">
+               BuildableName = "UDFTests.xctest"
+               BlueprintName = "UDFTests"
+               ReferencedContainer = "container:UDF.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -43,9 +43,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "63B15DBE1D903FFF00247B9B"
-            BuildableName = "UniFlow.framework"
-            BlueprintName = "UniFlow"
-            ReferencedContainer = "container:UniFlow.xcodeproj">
+            BuildableName = "UDF.framework"
+            BlueprintName = "UDF"
+            ReferencedContainer = "container:UDF.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -65,9 +65,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "63B15DBE1D903FFF00247B9B"
-            BuildableName = "UniFlow.framework"
-            BlueprintName = "UniFlow"
-            ReferencedContainer = "container:UniFlow.xcodeproj">
+            BuildableName = "UDF.framework"
+            BlueprintName = "UDF"
+            ReferencedContainer = "container:UDF.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -83,9 +83,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "63B15DBE1D903FFF00247B9B"
-            BuildableName = "UniFlow.framework"
-            BlueprintName = "UniFlow"
-            ReferencedContainer = "container:UniFlow.xcodeproj">
+            BuildableName = "UDF.framework"
+            BlueprintName = "UDF"
+            ReferencedContainer = "container:UDF.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

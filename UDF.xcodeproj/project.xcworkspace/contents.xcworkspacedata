@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:UniFlow.xcodeproj">
+      location = "self:/Users/david/src/UniFlow/UDF.xcodeproj">
    </FileRef>
 </Workspace>

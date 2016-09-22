@@ -4,6 +4,8 @@
 //  Copyright © 2016 CirrusMD. All rights reserved.
 //
 
+import Foundation
+
 
 func debugDiff(lhs: Any, rhs: Any) -> String {
 

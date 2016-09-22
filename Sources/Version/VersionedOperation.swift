@@ -6,6 +6,8 @@
 //  Copyright © 2016 CirrusMD. All rights reserved.
 //
 
+import Foundation
+
 
 open class VersionedOperation<T>: Operation {
 
