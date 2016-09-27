@@ -12,6 +12,7 @@
 		632B57161D90630400034B9E /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B57141D90630400034B9E /* Version.swift */; };
 		632B57191D90632700034B9E /* VersionedOperationTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B57171D90632700034B9E /* VersionedOperationTest.swift */; };
 		632B571A1D90632700034B9E /* VersionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B57181D90632700034B9E /* VersionTest.swift */; };
+		638343261D9B1DCF002A021F /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638343251D9B1DCF002A021F /* Config.swift */; };
 		63B15DC31D903FFF00247B9B /* UDF.h in Headers */ = {isa = PBXBuildFile; fileRef = 63B15DC21D903FFF00247B9B /* UDF.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		63B15DCA1D903FFF00247B9B /* UDF.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63B15DBF1D903FFF00247B9B /* UDF.framework */; };
 		63B15DDF1D904B6F00247B9B /* CombinedReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63B15DD91D904B6F00247B9B /* CombinedReducer.swift */; };
@@ -40,6 +41,7 @@
 		632B57141D90630400034B9E /* Version.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
 		632B57171D90632700034B9E /* VersionedOperationTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersionedOperationTest.swift; sourceTree = "<group>"; };
 		632B57181D90632700034B9E /* VersionTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersionTest.swift; sourceTree = "<group>"; };
+		638343251D9B1DCF002A021F /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		63B15DBF1D903FFF00247B9B /* UDF.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UDF.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63B15DC21D903FFF00247B9B /* UDF.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UDF.h; sourceTree = "<group>"; };
 		63B15DC41D903FFF00247B9B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -142,6 +144,7 @@
 				63B15DDC1D904B6F00247B9B /* Reducer.swift */,
 				63B15DDD1D904B6F00247B9B /* Store.swift */,
 				63B15DDE1D904B6F00247B9B /* Subscriber.swift */,
+				638343251D9B1DCF002A021F /* Config.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -260,6 +263,7 @@
 			files = (
 				63B15DE11D904B6F00247B9B /* Action.swift in Sources */,
 				63B15DDF1D904B6F00247B9B /* CombinedReducer.swift in Sources */,
+				638343261D9B1DCF002A021F /* Config.swift in Sources */,
 				632B57151D90630400034B9E /* VersionedOperation.swift in Sources */,
 				63B15DE31D904B6F00247B9B /* Store.swift in Sources */,
 				63B15DE41D904B6F00247B9B /* Subscriber.swift in Sources */,

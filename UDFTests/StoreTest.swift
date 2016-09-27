@@ -98,7 +98,7 @@ class ReduxStoreTest: XCTestCase {
     typealias TestReduxStore = Store<CounterState, TestReducer>
     let reducer = TestReducer()
     lazy var store: TestReduxStore = {
-        return Store(reducer: self.reducer, initialState: CounterState())
+        return Store(reducer: self.reducer, initialState: CounterState(), config: Config(debug: true))
     }()
 
     func test_dispatch_action() {

@@ -18,16 +18,18 @@ open class Store<State, RD: Reducer> where RD.State == State {
     public typealias Dispatcher = ActionDispatcher<State>
 
     fileprivate typealias Subscription = GenericSubscription<State>
-
+    
     fileprivate var previousState: State?
     fileprivate var state: State
 
     fileprivate let reducer: RD
     fileprivate var subscriptions: [Subscription] = []
+    fileprivate let config: Config
 
-    public init(reducer: RD, initialState: State) {
+    public init(reducer: RD, initialState: State, config: Config = Config.default) {
         self.reducer = reducer
         self.state = initialState
+        self.config = config
     }
 
     open func currentState() -> State {
@@ -51,15 +53,18 @@ open class Store<State, RD: Reducer> where RD.State == State {
 
     fileprivate func _dispatch(action: Action) {
         sync {
-            debugLog("DISPATCHED ACTION: \(action)")
+            self.logDebug("DISPATCHED ACTION: \(action)")
+            
+            let start = Date()
             self.previousState = self.state
             let newState = self.reducer.handle(action: action, forState: self.state)
             self.state = newState
+            self.logElapsedTime(start: start)
 
             if let prev = self.previousState {
-                debugLog(debugDiff(lhs: prev, rhs: self.state))
+                self.logDebug(debugDiff(lhs: prev, rhs: self.state))
             } else {
-                debugLog(debugDiff(lhs: "", rhs: self.state))
+                self.logDebug(debugDiff(lhs: "", rhs: self.state))
             }
 
             self.informSubscribers(self.previousState, current: newState)
@@ -70,7 +75,7 @@ open class Store<State, RD: Reducer> where RD.State == State {
         (_ subscriber: S, scope: ((State) -> ScopedState)?) where S.State == ScopedState {
         sync {
             if self.subscriptions.contains(where: { $0.subscriber === subscriber }) {
-                debugLog("\(#file): \(#function): subscriber \(subscriber) is already registered, ignoring.")
+                self.logDebug("\(#file): \(#function): subscriber \(subscriber) is already registered, ignoring.")
                 return
             }
             let subscription = Subscription(subscriber: subscriber, scope: scope)
@@ -137,12 +142,24 @@ open class Store<State, RD: Reducer> where RD.State == State {
     }
 }
 
-private func debugLog(_ message: String) {
-    #if DEBUG
-        print(#file, "[DEBUG]", message)
-    #endif
+private extension Store {
+    
+    func logDebug(_ message: String) {
+        if config.debug {
+            print("[UDF: DEBUG]", message)
+        }
+    }
+    
+    func logElapsedTime(start: Date) {
+        var duration =  abs(start.timeIntervalSinceNow) * 1000
+        var unit = "ms"
+        if duration < 1000 {
+            duration *= 1000
+            unit = "μs"
+        }
+        logDebug("Time to reduce state: \(duration) \(unit)")
+    }
 }
-
 
 private func scheduleOnNextRunLoop(_ block: @escaping () -> Void) {
     DispatchQueue.main.async(execute: block)
