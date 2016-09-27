@@ -151,13 +151,8 @@ private extension Store {
     }
     
     func logElapsedTime(start: Date) {
-        var duration =  abs(start.timeIntervalSinceNow) * 1000
-        var unit = "ms"
-        if duration < 1000 {
-            duration *= 1000
-            unit = "μs"
-        }
-        logDebug("Time to reduce state: \(duration) \(unit)")
+        let duration = abs(start.timeIntervalSinceNow) * 1_000_000
+        logDebug("Time to reduce state: \(duration) μs")
     }
 }
 
