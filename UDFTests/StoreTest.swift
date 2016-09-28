@@ -100,6 +100,23 @@ class ReduxStoreTest: XCTestCase {
     lazy var store: TestReduxStore = {
         return Store(reducer: self.reducer, initialState: CounterState(), config: Config(debug: true))
     }()
+    
+    func test_currentState() {
+        store.dispatch(CountAction.Increment)
+        
+        XCTAssertEqual(store.currentState().counter, 1)
+        
+        let exp = expectation(description: "")
+        var backgroundState: CounterState?
+        scheduleInBackground {
+            self.store.dispatch(CountAction.Increment)
+            backgroundState = self.store.currentState()
+            exp.fulfill()
+        }
+        waitForExpectations(timeout: 1, handler: nil)
+        
+        XCTAssertEqual(backgroundState?.counter, 2)
+    }
 
     func test_dispatch_action() {
         reducer.expectation = expectation(description: #function)
@@ -197,7 +214,7 @@ class ReduxStoreTest: XCTestCase {
     }
 
     func test_raceConditions() {
-        let iters = 250
+        let iters = 500
 
         let parent = UIViewController()
         var subscribers = [TestSubscriber]()
