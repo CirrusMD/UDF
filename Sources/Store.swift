@@ -148,11 +148,27 @@ private extension Store {
     }
     
     func logElapsedTime(start: Date) {
+        guard config.debug else {
+            return
+        }
         let duration = abs(start.timeIntervalSinceNow) * 1_000_000
-        logDebug("Time to reduce state: \(duration) μs")
+        let formatted = formatter.string(from: NSNumber(value: duration)) ?? "unknown"
+        logDebug("Time spent reducing state: \(formatted) μs")
     }
 }
 
 private func scheduleOnNextRunLoop(_ block: @escaping () -> Void) {
     DispatchQueue.main.async(execute: block)
 }
+
+private let formatter: NumberFormatter = {
+    let f = NumberFormatter()
+    f.numberStyle = .decimal
+    f.locale = NSLocale.current
+    f.alwaysShowsDecimalSeparator = true
+    f.minimumFractionDigits = 2
+    f.maximumFractionDigits = 2
+    f.groupingSeparator = ","
+    f.usesGroupingSeparator = true
+    return f
+}()
