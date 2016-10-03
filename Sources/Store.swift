@@ -99,9 +99,8 @@ open class Store<State, RD: Reducer> where RD.State == State {
     }
 
     open func unSubscribe(_ subscriber: AnyObject) {
-        weak var weakSubscriber = subscriber
         sync {
-            if let subscriber = weakSubscriber, let index = self.subscriptions.index(where: { $0.subscriber === subscriber }) {
+            if let index = self.subscriptions.index(where: { $0.subscriber === subscriber }) {
                 self.subscriptions.remove(at: index)
             }
         }
@@ -116,9 +115,7 @@ open class Store<State, RD: Reducer> where RD.State == State {
     }
 
     fileprivate func informSubscribers(_ previous: State?, current: State) {
-        let valid = subscriptions.filter {
-            return $0.subscriber != nil
-        }
+        let valid = subscriptions.filter { $0.subscriber != nil }
 
         valid.forEach {
             self.informSubscriber($0, previous: self.previousState, current: self.state)
