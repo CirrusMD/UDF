@@ -59,7 +59,7 @@ open class Store<State, RD: Reducer> where RD.State == State {
     fileprivate func _dispatch(action: Action) {
         sync {
             guard !self.isDispatching else {
-                fatalError("Deadlock detected. Did a reducer dispatch an action?")
+                fatalError("[UDF]: Deadlock detected. Did a reducer dispatch an action or a subscriber dispatch while updating state?")
             }
             self.isDispatching = true
             self.logDebug("DISPATCHED ACTION: \(action)")
