@@ -83,7 +83,10 @@ open class Store<State, RD: Reducer> where RD.State == State {
             let subscription = Subscription(subscriber: subscriber, scope: scope)
             self.logDebug("adding subscriber \(subscription)")
             self.subscriptions.append(subscription)
-            self.informSubscriber(subscription, previous: self.previousState, current: self.state)
+            
+            scheduleOnNextRunLoop {
+                self.informSubscriber(subscription, previous: self.previousState, current: self.state)
+            }
         }
     }
 
@@ -100,23 +103,38 @@ open class Store<State, RD: Reducer> where RD.State == State {
         }
     }
 
-    fileprivate let actionQueue = DispatchQueue(label: "com.cirrusmd.reduxStore.action", attributes: [])
+    fileprivate let actionQueue = DispatchQueue(label: "com.cirrusmd.UDF.reducerQueue", attributes: [])
     fileprivate let deadlockQueue = DispatchQueue(
-        label: "com.cirrusmd.reduxStore.deadlockMonitoring",
+        label: "com.cirrusmd.UDF.deadlockMonitoring",
         attributes: DispatchQueue.Attributes.concurrent
     )
     fileprivate func sync(_ block: @escaping () -> Void) {
         let sem = DispatchSemaphore(value: 0)
-        let timeout = DispatchTime.now() + Double(Int64(10 * NSEC_PER_SEC)) / Double(NSEC_PER_SEC)
+        let timeout = DispatchTime.now() + .seconds(10)
         actionQueue.async {
-
             block()
             sem.signal()
         }
 
         deadlockQueue.async {
             if sem.wait(timeout: timeout) == .timedOut {
-                fatalError("ReduxStore deadlock timeout. Did a reducer dispatch an action?")
+                fatalError("[UDF]: Store deadlock timeout. Did a reducer dispatch an action?")
+            }
+        }
+    }
+    
+    let sem = DispatchSemaphore(value: 1)
+    
+    func sync2(_ reduce: @escaping () -> Void, subscribe: @escaping () -> Void) {
+        if sem.wait(timeout: DispatchTime.now() + .seconds(10)) == .timedOut {
+            fatalError("[UDF]: Store deadlock timeout. Did a reducer dispatch an action?")
+        }
+
+        actionQueue.async {
+            reduce()
+            scheduleOnNextRunLoop {
+                subscribe()
+                self.sem.signal()
             }
         }
     }
