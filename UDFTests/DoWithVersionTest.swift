@@ -25,14 +25,6 @@ private func ==(lhs: TestVersionable, rhs: TestVersionable) -> Bool {
 
 class VersionedOperationTest: XCTestCase {
 
-    let queue = OperationQueue()
-
-    override func setUp() {
-        super.setUp()
-
-        queue.maxConcurrentOperationCount = 1
-    }
-
     func test_execute() {
         let key = UIViewController()
         let version = Version(TestVersionable())
@@ -46,13 +38,12 @@ class VersionedOperationTest: XCTestCase {
             (key, version, false),
             (key, version, false),
         ]
-
+        
         for (index, (key, version, expectation)) in tests.enumerated() {
             var executed = false
-            let op = VersionedOperation(key: key, version: version) {
+            DoWithVersion(key: key, version: version, task: { 
                 executed = true
-            }
-            queue.addOperations([op], waitUntilFinished: true)
+            })
 
             if executed != expectation {
                 XCTFail("test case# \(index+1): expected \(expectation), got \(executed)")
