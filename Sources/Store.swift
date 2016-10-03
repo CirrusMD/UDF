@@ -21,7 +21,6 @@ open class Store<State, RD: Reducer> where RD.State == State {
     
     fileprivate var previousState: State?
     fileprivate var state: State
-    fileprivate var isDispatching = false
 
     fileprivate let reducer: RD
     fileprivate var subscriptions: [Subscription] = []
@@ -34,13 +33,9 @@ open class Store<State, RD: Reducer> where RD.State == State {
     }
 
     open func currentState() -> State {
-        if Thread.isMainThread {
-            return self.state
-        }
-        
         var current: State!
         let sem = DispatchSemaphore(value: 0)
-        scheduleOnNextRunLoop {
+        sync {
             current = self.state
             sem.signal()
         }
@@ -58,10 +53,6 @@ open class Store<State, RD: Reducer> where RD.State == State {
 
     fileprivate func _dispatch(action: Action) {
         sync {
-            guard !self.isDispatching else {
-                fatalError("[UDF]: Deadlock detected. Did a reducer dispatch an action or a subscriber dispatch while updating state?")
-            }
-            self.isDispatching = true
             self.logDebug("DISPATCHED ACTION: \(action)")
             
             let reduceStart = Date()
@@ -79,7 +70,6 @@ open class Store<State, RD: Reducer> where RD.State == State {
             let subscribeStart = Date()
             self.informSubscribers(self.previousState, current: newState)
             self.logElapsedTime(start: subscribeStart, message: "Subscriber elapsed time")
-            self.isDispatching = false
         }
     }
 
@@ -110,11 +100,24 @@ open class Store<State, RD: Reducer> where RD.State == State {
         }
     }
 
-    fileprivate func sync(_ closure: @escaping () -> Void) {
-        if Thread.isMainThread {
-            closure()
-        } else {
-            scheduleOnNextRunLoop(closure)
+    fileprivate let actionQueue = DispatchQueue(label: "com.cirrusmd.reduxStore.action", attributes: [])
+    fileprivate let deadlockQueue = DispatchQueue(
+        label: "com.cirrusmd.reduxStore.deadlockMonitoring",
+        attributes: DispatchQueue.Attributes.concurrent
+    )
+    fileprivate func sync(_ block: @escaping () -> Void) {
+        let sem = DispatchSemaphore(value: 0)
+        let timeout = DispatchTime.now() + Double(Int64(10 * NSEC_PER_SEC)) / Double(NSEC_PER_SEC)
+        actionQueue.async {
+
+            block()
+            sem.signal()
+        }
+
+        deadlockQueue.async {
+            if sem.wait(timeout: timeout) == .timedOut {
+                fatalError("ReduxStore deadlock timeout. Did a reducer dispatch an action?")
+            }
         }
     }
 
