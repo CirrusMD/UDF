@@ -125,14 +125,12 @@ open class Store<State, RD: Reducer> where RD.State == State {
     }
 
     fileprivate func informSubscriber(_ subscription: Subscription, previous: State?, current: State) {
-        scheduleOnNextRunLoop {
-            var prev: Any? = nil
-            if let previous = previous {
-                prev = subscription.scope?(previous) ?? previous
-            }
-            let curr = subscription.scope?(current) ?? current
-            subscription.subscriber?._updateState(previous: prev, current: curr)
+        var prev: Any? = nil
+        if let previous = previous {
+            prev = subscription.scope?(previous) ?? previous
         }
+        let curr = subscription.scope?(current) ?? current
+        subscription.subscriber?._updateState(previous: prev, current: curr)
     }
 }
 
