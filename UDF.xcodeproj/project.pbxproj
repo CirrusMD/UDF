@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		5AF0E6A435AE8795966D8F7C /* DebugDiff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AF0E1FE61617BF809F5B5FC /* DebugDiff.swift */; };
-		632B57151D90630400034B9E /* VersionedOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B57131D90630400034B9E /* VersionedOperation.swift */; };
+		632B57151D90630400034B9E /* DoWithVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B57131D90630400034B9E /* DoWithVersion.swift */; };
 		632B57161D90630400034B9E /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B57141D90630400034B9E /* Version.swift */; };
-		632B57191D90632700034B9E /* VersionedOperationTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B57171D90632700034B9E /* VersionedOperationTest.swift */; };
+		632B57191D90632700034B9E /* DoWithVersionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B57171D90632700034B9E /* DoWithVersionTest.swift */; };
 		632B571A1D90632700034B9E /* VersionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B57181D90632700034B9E /* VersionTest.swift */; };
 		638343261D9B1DCF002A021F /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638343251D9B1DCF002A021F /* Config.swift */; };
 		63B15DC31D903FFF00247B9B /* UDF.h in Headers */ = {isa = PBXBuildFile; fileRef = 63B15DC21D903FFF00247B9B /* UDF.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -37,9 +37,9 @@
 
 /* Begin PBXFileReference section */
 		5AF0E1FE61617BF809F5B5FC /* DebugDiff.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugDiff.swift; sourceTree = "<group>"; };
-		632B57131D90630400034B9E /* VersionedOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersionedOperation.swift; sourceTree = "<group>"; };
+		632B57131D90630400034B9E /* DoWithVersion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoWithVersion.swift; sourceTree = "<group>"; };
 		632B57141D90630400034B9E /* Version.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
-		632B57171D90632700034B9E /* VersionedOperationTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersionedOperationTest.swift; sourceTree = "<group>"; };
+		632B57171D90632700034B9E /* DoWithVersionTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoWithVersionTest.swift; sourceTree = "<group>"; };
 		632B57181D90632700034B9E /* VersionTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersionTest.swift; sourceTree = "<group>"; };
 		638343251D9B1DCF002A021F /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		63B15DBF1D903FFF00247B9B /* UDF.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UDF.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -97,7 +97,7 @@
 			isa = PBXGroup;
 			children = (
 				632B57141D90630400034B9E /* Version.swift */,
-				632B57131D90630400034B9E /* VersionedOperation.swift */,
+				632B57131D90630400034B9E /* DoWithVersion.swift */,
 			);
 			path = Version;
 			sourceTree = "<group>";
@@ -129,7 +129,7 @@
 				63B15DD01D903FFF00247B9B /* Info.plist */,
 				63B15DE81D904C6C00247B9B /* StoreTest.swift */,
 				632B57181D90632700034B9E /* VersionTest.swift */,
-				632B57171D90632700034B9E /* VersionedOperationTest.swift */,
+				632B57171D90632700034B9E /* DoWithVersionTest.swift */,
 			);
 			path = UDFTests;
 			sourceTree = "<group>";
@@ -264,7 +264,7 @@
 				63B15DE11D904B6F00247B9B /* Action.swift in Sources */,
 				63B15DDF1D904B6F00247B9B /* CombinedReducer.swift in Sources */,
 				638343261D9B1DCF002A021F /* Config.swift in Sources */,
-				632B57151D90630400034B9E /* VersionedOperation.swift in Sources */,
+				632B57151D90630400034B9E /* DoWithVersion.swift in Sources */,
 				63B15DE31D904B6F00247B9B /* Store.swift in Sources */,
 				63B15DE41D904B6F00247B9B /* Subscriber.swift in Sources */,
 				63B15DE21D904B6F00247B9B /* Reducer.swift in Sources */,
@@ -277,7 +277,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				632B57191D90632700034B9E /* VersionedOperationTest.swift in Sources */,
+				632B57191D90632700034B9E /* DoWithVersionTest.swift in Sources */,
 				632B571A1D90632700034B9E /* VersionTest.swift in Sources */,
 				63B15DE91D904C6C00247B9B /* CombinedReducerTest.swift in Sources */,
 				63B15DEA1D904C6C00247B9B /* FakeStore.swift in Sources */,
