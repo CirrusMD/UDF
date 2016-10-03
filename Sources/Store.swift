@@ -64,11 +64,11 @@ open class Store<State, RD: Reducer> where RD.State == State {
             self.isDispatching = true
             self.logDebug("DISPATCHED ACTION: \(action)")
             
-            let start = Date()
+            let reduceStart = Date()
             self.previousState = self.state
             let newState = self.reducer.handle(action: action, forState: self.state)
             self.state = newState
-            self.logElapsedTime(start: start)
+            self.logElapsedTime(start: reduceStart, message: "Reducer elapsed time")
 
             if let prev = self.previousState {
                 self.logDebug(debugDiff(lhs: prev, rhs: self.state))
@@ -76,7 +76,9 @@ open class Store<State, RD: Reducer> where RD.State == State {
                 self.logDebug(debugDiff(lhs: "", rhs: self.state))
             }
 
+            let subscribeStart = Date()
             self.informSubscribers(self.previousState, current: newState)
+            self.logElapsedTime(start: subscribeStart, message: "Subscriber elapsed time")
             self.isDispatching = false
         }
     }
@@ -142,13 +144,13 @@ private extension Store {
         }
     }
     
-    func logElapsedTime(start: Date) {
+    func logElapsedTime(start: Date, message: String) {
         guard config.debug else {
             return
         }
         let duration = abs(start.timeIntervalSinceNow) * 1_000_000
         let formatted = formatter.string(from: NSNumber(value: duration)) ?? "unknown"
-        logDebug("Time spent reducing state: \(formatted) μs")
+        logDebug("\(message): \(formatted) μs")
     }
 }
 
