@@ -13,22 +13,22 @@
 
 internal struct GenericSubscription<State> {
     typealias ScopeFunc = (State) -> Any
-    fileprivate(set) weak var subscriber: SubscriberType?
+    fileprivate(set) weak var subscriber: AnySubscriber?
     let scope: ScopeFunc?
 
-    init(subscriber: SubscriberType, scope: ScopeFunc?) {
+    init(subscriber: AnySubscriber, scope: ScopeFunc?) {
         self.subscriber = subscriber
         self.scope = scope
     }
 }
 
 // Must be a class because it may be a weak reference
-public protocol SubscriberType: class {
+public protocol AnySubscriber: class {
     func _updateState(previous: Any?, current: Any)
 }
 
 
-public protocol Subscriber: SubscriberType {
+public protocol Subscriber: AnySubscriber {
     associatedtype State
 
     func updateState(previous: State?, current: State)
@@ -40,7 +40,7 @@ extension Subscriber {
         if let current = current as? State {
             updateState(previous: previous, current: current)
         } else {
-            assertionFailure("Redux subscriber \(self) received unexpected state \(current)")
+            assertionFailure("[UDF] Subscriber \(self) received unexpected state \(current)")
         }
     }
 }
