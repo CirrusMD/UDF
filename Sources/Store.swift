@@ -87,10 +87,11 @@ open class Store<State, RD: Reducer> where RD.State == State {
         (_ subscriber: S, scope: ((State) -> ScopedState)?) where S.State == ScopedState {
         sync {
             if self.subscriptions.contains(where: { $0.subscriber === subscriber }) {
-                self.logDebug("\(#file): \(#function): subscriber \(subscriber) is already registered, ignoring.")
+                self.logDebug("subscriber \(subscriber) is already registered, ignoring.")
                 return
             }
             let subscription = Subscription(subscriber: subscriber, scope: scope)
+            self.logDebug("adding subscriber \(subscription)")
             self.subscriptions.append(subscription)
             self.informSubscriber(subscription, previous: self.previousState, current: self.state)
         }
@@ -103,6 +104,7 @@ open class Store<State, RD: Reducer> where RD.State == State {
     open func unSubscribe(_ subscriber: AnyObject) {
         sync {
             if let index = self.subscriptions.index(where: { $0.subscriber === subscriber }) {
+                self.logDebug("removing subscriber \(self.subscriptions[index])")
                 self.subscriptions.remove(at: index)
             }
         }

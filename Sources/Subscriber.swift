@@ -22,6 +22,15 @@ internal struct GenericSubscription<State> {
     }
 }
 
+extension GenericSubscription: CustomDebugStringConvertible {
+    var debugDescription: String {
+        guard let subscriber = subscriber else {
+            return "nil subscriber"
+        }
+        return "\(subscriber)"
+    }
+}
+
 // Must be a class because it may be a weak reference
 public protocol AnySubscriber: class {
     func _updateState(previous: Any?, current: Any)
