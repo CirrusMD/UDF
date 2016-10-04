@@ -16,7 +16,7 @@ class FakeStore<State, RD: Reducer>: Store<State, RD> where RD.State == State {
         return lastActions.last
     }
     var lastDispatchers: [Dispatcher] = []
-    var subscribers: [SubscriberType] = []
+    var subscribers: [AnySubscriber] = []
     var state: State
 
     func reset() {
