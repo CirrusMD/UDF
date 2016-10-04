@@ -49,7 +49,7 @@ extension Subscriber {
         if let current = current as? State {
             updateState(previous: previous, current: current)
         } else {
-            assertionFailure("[UDF] Subscriber \(self) received unexpected state \(current)")
+            fatalError("[UDF] Subscriber \(self) received unexpected state \(current)")
         }
     }
 }
