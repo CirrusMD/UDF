@@ -102,9 +102,9 @@ class ReduxStoreTest: XCTestCase {
     }()
     
     func test_currentState() {
-        store.dispatch(CountAction.Increment)
-        
-        XCTAssertEqual(store.currentState().counter, 1)
+//        store.dispatch(CountAction.Increment)
+//        
+//        XCTAssertEqual(store.currentState().counter, 1)
         
         let exp = expectation(description: "")
         var backgroundState: CounterState?

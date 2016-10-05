@@ -16,15 +16,24 @@ import Dispatch
 open class Store<State, RD: Reducer> where RD.State == State {
 
     public typealias Dispatcher = ActionDispatcher<State>
-
-    fileprivate typealias Subscription = GenericSubscription<State>
+    private typealias Subscription = GenericSubscription<State>
     
-    fileprivate var previousState: State?
-    fileprivate var state: State
+    private var previousState: State?
+    private var state: State
 
-    fileprivate let reducer: RD
-    fileprivate var subscriptions: [Subscription] = []
+    private let reducer: RD
+    private var subscriptions: [Subscription] = []
     fileprivate let config: Config
+    
+    private let reducerQueue = DispatchQueue(
+        label: "com.cirrusmd.UDF.reducerQueue",
+        attributes: [.concurrent]
+    )
+    private let deadlockQueue = DispatchQueue(
+        label: "com.cirrusmd.UDF.deadlockMonitoring",
+        attributes: [.concurrent]
+    )
+    private let mainQueue = DispatchQueue.main
 
     public init(reducer: RD, initialState: State, config: Config = Config.default) {
         self.reducer = reducer
@@ -33,44 +42,39 @@ open class Store<State, RD: Reducer> where RD.State == State {
     }
 
     open func currentState() -> State {
-        var current: State!
-        let sem = DispatchSemaphore(value: 0)
-        sync {
-            current = self.state
-            sem.signal()
-        }
-        _ = sem.wait(timeout: DispatchTime.distantFuture)
-        return current
+        return reducerQueue.sync { self.state }
     }
 
     open func dispatch(_ action: Action) {
-        _dispatch(action: action)
+        sync {
+            self._dispatch(action: action)
+        }
     }
 
     open func dispatch(_ actionDispatcher: Dispatcher) {
-        actionDispatcher.dispatch(currentState, _dispatch)
+        actionDispatcher.dispatch(currentState, dispatch)
     }
 
     fileprivate func _dispatch(action: Action) {
-        sync {
-            self.logDebug("DISPATCHED ACTION: \(action)")
-            
-            let reduceStart = Date()
-            self.previousState = self.state
-            let newState = self.reducer.handle(action: action, forState: self.state)
-            self.state = newState
-            self.logElapsedTime(start: reduceStart, message: "Reducer elapsed time")
+        logDebug("DISPATCHED ACTION: \(action)")
+        
+        let reduceStart = Date()
+        previousState = state
+        let newState = reducer.handle(action: action, forState: state)
+        state = newState
+        logElapsedTime(start: reduceStart, message: "Reducer elapsed time")
 
-            if let prev = self.previousState {
-                self.logDebug(debugDiff(lhs: prev, rhs: self.state))
-            } else {
-                self.logDebug(debugDiff(lhs: "", rhs: self.state))
-            }
-
-            let subscribeStart = Date()
-            self.informSubscribers(self.previousState, current: newState)
-            self.logElapsedTime(start: subscribeStart, message: "Subscriber elapsed time")
+        if let prev = previousState {
+            logDebug(debugDiff(lhs: prev, rhs: state))
+        } else {
+            logDebug(debugDiff(lhs: "", rhs: state))
         }
+
+        let subscribeStart = Date()
+        mainQueue.sync {
+            self.informSubscribers(previousState, current: newState)
+        }
+        logElapsedTime(start: subscribeStart, message: "Subscriber elapsed time")
     }
 
     open func subscribe<ScopedState, S: Subscriber>
@@ -84,7 +88,7 @@ open class Store<State, RD: Reducer> where RD.State == State {
             self.logDebug("adding subscriber \(subscription)")
             self.subscriptions.append(subscription)
             
-            scheduleOnNextRunLoop {
+            self.mainQueue.sync {
                 self.informSubscriber(subscription, previous: self.previousState, current: self.state)
             }
         }
@@ -103,15 +107,10 @@ open class Store<State, RD: Reducer> where RD.State == State {
         }
     }
 
-    fileprivate let actionQueue = DispatchQueue(label: "com.cirrusmd.UDF.reducerQueue", attributes: [])
-    fileprivate let deadlockQueue = DispatchQueue(
-        label: "com.cirrusmd.UDF.deadlockMonitoring",
-        attributes: DispatchQueue.Attributes.concurrent
-    )
-    fileprivate func sync(_ block: @escaping () -> Void) {
+    private func sync(_ block: @escaping () -> Void) {
         let sem = DispatchSemaphore(value: 0)
         let timeout = DispatchTime.now() + .seconds(10)
-        actionQueue.async {
+        reducerQueue.async(flags: .barrier) {
             block()
             sem.signal()
         }
@@ -123,23 +122,7 @@ open class Store<State, RD: Reducer> where RD.State == State {
         }
     }
     
-    let sem = DispatchSemaphore(value: 1)
-    
-    func sync2(_ reduce: @escaping () -> Void, subscribe: @escaping () -> Void) {
-        if sem.wait(timeout: DispatchTime.now() + .seconds(10)) == .timedOut {
-            fatalError("[UDF]: Store deadlock timeout. Did a reducer dispatch an action?")
-        }
-
-        actionQueue.async {
-            reduce()
-            scheduleOnNextRunLoop {
-                subscribe()
-                self.sem.signal()
-            }
-        }
-    }
-
-    fileprivate func informSubscribers(_ previous: State?, current: State) {
+    private func informSubscribers(_ previous: State?, current: State) {
         let valid = subscriptions.filter { $0.subscriber != nil }
 
         valid.forEach {
@@ -149,7 +132,7 @@ open class Store<State, RD: Reducer> where RD.State == State {
         subscriptions = valid
     }
 
-    fileprivate func informSubscriber(_ subscription: Subscription, previous: State?, current: State) {
+    private func informSubscriber(_ subscription: Subscription, previous: State?, current: State) {
         var prev: Any? = nil
         if let previous = previous {
             prev = subscription.scope?(previous) ?? previous
@@ -163,7 +146,7 @@ private extension Store {
     
     func logDebug(_ message: String) {
         if config.debug {
-            print("[UDF: DEBUG]", message)
+            print("[UDF DEBUG] \(self):", message)
         }
     }
     
@@ -175,10 +158,6 @@ private extension Store {
         let formatted = formatter.string(from: NSNumber(value: duration)) ?? "unknown"
         logDebug("\(message): \(formatted) μs")
     }
-}
-
-private func scheduleOnNextRunLoop(_ block: @escaping () -> Void) {
-    DispatchQueue.main.async(execute: block)
 }
 
 private let formatter: NumberFormatter = {
