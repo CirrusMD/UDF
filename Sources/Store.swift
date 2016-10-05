@@ -142,7 +142,7 @@ private extension Store {
     
     func logDebug(_ message: String) {
         if config.debug {
-            print("[UDF: DEBUG]", message)
+            print("[UDF DEBUG] \(self)", message)
         }
     }
     
