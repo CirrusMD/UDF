@@ -10,94 +10,11 @@ import XCTest
 import UDF
 
 
-enum CountAction: Action {
-    case Increment, Decrement
-}
-
-
-struct CounterState {
-    var counter = 0
-    var scopedState = ScopedState()
-}
-
-
-class TestReducer: Reducer {
-    typealias State = CounterState
-
-    var didHandleAction = false
-    var state: CounterState?
-    var expectation: XCTestExpectation?
-
-    func handle(action: Action, forState state: CounterState) -> CounterState {
-        var state = state
-        guard let countAction = action as? CountAction else {
-            return state
-        }
-
-        switch countAction {
-        case .Increment:
-            state.counter += 1
-        case .Decrement:
-            state.counter -= 1
-        }
-
-        state.scopedState.message = "Reducer did its job!"
-
-        didHandleAction = true
-        self.state = state
-        expectation?.fulfill()
-        return state
-    }
-}
-
-
-class TestSubscriber: UIViewController, Subscriber {
-    typealias State = CounterState
-
-    var lastStates: [CounterState] = []
-    var previousStates: [CounterState?] = []
-    let label = UILabel(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
-
-    var expectation: XCTestExpectation?
-
-    func updateState(previous: CounterState?, current: CounterState) {
-        previousStates.append(previous)
-        lastStates.append(current)
-        label.text = "\(current.counter)"
-        expectation?.fulfill()
-    }
-
-    override func loadView() {
-        view = UIView()
-        view.addSubview(label)
-    }
-}
-
-
-struct ScopedState {
-    var message = "Beginning Message"
-}
-
-
-private class FilteredSubscriber: Subscriber {
-    typealias State = ScopedState
-    var previousMessage = ""
-    var message = ""
-    var expectation: XCTestExpectation?
-
-    func updateState(previous: State?, current: State) {
-        previousMessage = previous?.message ?? ""
-        message = current.message
-        expectation?.fulfill()
-    }
-}
-
-
 class ReduxStoreTest: XCTestCase {
 
-    typealias TestReduxStore = Store<CounterState, TestReducer>
+    typealias TestStore = Store<CounterState, TestReducer>
     let reducer = TestReducer()
-    lazy var store: TestReduxStore = {
+    lazy var store: TestStore = {
         return Store(reducer: self.reducer, initialState: CounterState(), config: Config(debug: true))
     }()
     
@@ -212,8 +129,42 @@ class ReduxStoreTest: XCTestCase {
 
         XCTAssertEqual(subscriber.lastStates.count, 1)
     }
+    
+    //MARK: Race Conditions
+    
+    func test_updateState_callingCurrentState() {
+        let subscriber = TestSubscriber()
+        var state: CounterState? = nil
+        subscriber.arbitraryClosure = {
+           state = self.store.currentState()
+        }
+        subscriber.expectation = expectation(description: #function)
+        store.subscribe(subscriber)
+        waitForExpectations(timeout: 1, handler: nil)
+        
+        XCTAssertEqual(state?.counter, 0)
+        
+        subscriber.expectation = expectation(description: #function)
+        store.dispatch(CountAction.Increment)
+        waitForExpectations(timeout: 1, handler: nil)
+        
+        XCTAssertEqual(state?.counter, 1)
+    }
+    
+    func test_updateState_subscribingWithin() {
+        let subscriber = TestSubscriber()
+        subscriber.arbitraryClosure = {
+            self.store.subscribe(TestSubscriber())
+        }
+        store.dispatch(CountAction.Increment)
+        store.subscribe(subscriber)
+        subscriber.expectation = expectation(description: #function)
+        waitForExpectations(timeout: 1, handler: nil)
+        
+        XCTAssertEqual(subscriber.label.text, "1")
+    }
 
-    func test_raceConditions() {
+    func test_subscribingFromDifferentThreads() {
         let iters = 1000
 
         let parent = UIViewController()
@@ -243,7 +194,7 @@ class ReduxStoreTest: XCTestCase {
             exp.fulfill()
         }
 
-        waitForExpectations(timeout: 20, handler: nil)
+        waitForExpectations(timeout: 200, handler: nil)
 
         for subscriber in subscribers[1..<iters] {
 

@@ -12,6 +12,7 @@
 		632B57161D90630400034B9E /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B57141D90630400034B9E /* Version.swift */; };
 		632B57191D90632700034B9E /* DoWithVersionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B57171D90632700034B9E /* DoWithVersionTest.swift */; };
 		632B571A1D90632700034B9E /* VersionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632B57181D90632700034B9E /* VersionTest.swift */; };
+		633CC8341DA5A05500E161B2 /* TestReducers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 633CC8331DA5A05500E161B2 /* TestReducers.swift */; };
 		638343261D9B1DCF002A021F /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638343251D9B1DCF002A021F /* Config.swift */; };
 		63B15DC31D903FFF00247B9B /* UDF.h in Headers */ = {isa = PBXBuildFile; fileRef = 63B15DC21D903FFF00247B9B /* UDF.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		63B15DCA1D903FFF00247B9B /* UDF.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63B15DBF1D903FFF00247B9B /* UDF.framework */; };
@@ -41,6 +42,7 @@
 		632B57141D90630400034B9E /* Version.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
 		632B57171D90632700034B9E /* DoWithVersionTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoWithVersionTest.swift; sourceTree = "<group>"; };
 		632B57181D90632700034B9E /* VersionTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersionTest.swift; sourceTree = "<group>"; };
+		633CC8331DA5A05500E161B2 /* TestReducers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestReducers.swift; sourceTree = "<group>"; };
 		638343251D9B1DCF002A021F /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		63B15DBF1D903FFF00247B9B /* UDF.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UDF.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		63B15DC21D903FFF00247B9B /* UDF.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UDF.h; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 				63B15DE81D904C6C00247B9B /* StoreTest.swift */,
 				632B57181D90632700034B9E /* VersionTest.swift */,
 				632B57171D90632700034B9E /* DoWithVersionTest.swift */,
+				633CC8331DA5A05500E161B2 /* TestReducers.swift */,
 			);
 			path = UDFTests;
 			sourceTree = "<group>";
@@ -279,6 +282,7 @@
 			files = (
 				632B57191D90632700034B9E /* DoWithVersionTest.swift in Sources */,
 				632B571A1D90632700034B9E /* VersionTest.swift in Sources */,
+				633CC8341DA5A05500E161B2 /* TestReducers.swift in Sources */,
 				63B15DE91D904C6C00247B9B /* CombinedReducerTest.swift in Sources */,
 				63B15DEA1D904C6C00247B9B /* FakeStore.swift in Sources */,
 				63B15DEB1D904C6C00247B9B /* StoreTest.swift in Sources */,
