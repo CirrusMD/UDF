@@ -98,7 +98,7 @@ class ReduxStoreTest: XCTestCase {
     typealias TestReduxStore = Store<CounterState, TestReducer>
     let reducer = TestReducer()
     lazy var store: TestReduxStore = {
-        return Store(reducer: self.reducer, initialState: CounterState(), config: Config(debug: false))
+        return Store(reducer: self.reducer, initialState: CounterState(), config: Config(debug: true))
     }()
     
     func test_currentState() {
@@ -214,7 +214,7 @@ class ReduxStoreTest: XCTestCase {
     }
 
     func test_raceConditions() {
-        let iters = 500
+        let iters = 1000
 
         let parent = UIViewController()
         var subscribers = [TestSubscriber]()
@@ -243,7 +243,7 @@ class ReduxStoreTest: XCTestCase {
             exp.fulfill()
         }
 
-        waitForExpectations(timeout: 10, handler: nil)
+        waitForExpectations(timeout: 20, handler: nil)
 
         for subscriber in subscribers[1..<iters] {
 

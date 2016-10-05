@@ -25,6 +25,8 @@ open class Store<State, RD: Reducer> where RD.State == State {
     private var subscriptions: [Subscription] = []
     fileprivate let config: Config
     
+    let group = DispatchGroup()
+    
     private let reducerQueue = DispatchQueue(
         label: "com.cirrusmd.UDF.reducerQueue",
         attributes: [.concurrent]
@@ -33,7 +35,6 @@ open class Store<State, RD: Reducer> where RD.State == State {
         label: "com.cirrusmd.UDF.deadlockMonitoring",
         attributes: [.concurrent]
     )
-    private let subscribing = DispatchSemaphore(value: 1)
     private let mainQueue = DispatchQueue.main
 
     public init(reducer: RD, initialState: State, config: Config = Config.default) {
@@ -43,21 +44,25 @@ open class Store<State, RD: Reducer> where RD.State == State {
     }
 
     open func currentState() -> State {
+        if group.wait(timeout: DispatchTime.now() + .seconds(10)) == .timedOut {
+            fatalError("deadlock")
+        }
         return reducerQueue.sync { self.state }
     }
-
-    open func dispatch(_ action: Action) {
-        sync {
-            self._dispatch(action: action)
-        }
-    }
-
+    
     open func dispatch(_ actionDispatcher: Dispatcher) {
         actionDispatcher.dispatch(currentState, dispatch)
     }
 
-    fileprivate func _dispatch(action: Action) {
-        _ = subscribing.wait(timeout: DispatchTime.distantFuture)
+    open func dispatch(_ action: Action) {
+        sync { self._dispatch(action: action) }
+    }
+
+    private func _dispatch(action: Action) {
+        if group.wait(timeout: DispatchTime.now() + .seconds(10)) == .timedOut {
+            fatalError("deadlock")
+        }
+        
         logDebug("DISPATCHED ACTION: \(action)")
         
         let reduceStart = Date()
@@ -73,31 +78,47 @@ open class Store<State, RD: Reducer> where RD.State == State {
         }
 
         let subscribeStart = Date()
-        self.informSubscribers(self.previousState, current: newState)
-        logElapsedTime(start: subscribeStart, message: "Subscriber elapsed time")
-    }
-
-    open func subscribe<ScopedState, S: Subscriber>
-        (_ subscriber: S, scope: ((State) -> ScopedState)?) where S.State == ScopedState {
-        sync {
-            if self.subscriptions.contains(where: { $0.subscriber === subscriber }) {
-                self.logDebug("subscriber \(subscriber) is already registered, ignoring.")
-                return
+        let valid = subscriptions.filter { $0.subscriber != nil }
+        
+        group.enter()
+        mainQueue.async {
+            valid.forEach {
+                self.informSubscriber($0, previous: self.previousState, current: self.state)
             }
-            let subscription = Subscription(subscriber: subscriber, scope: scope)
-            self.logDebug("adding subscriber \(subscription)")
-            self.subscriptions.append(subscription)
-            
-            self.mainQueue.sync {
-                self.informSubscriber(subscription, previous: self.previousState, current: self.state)
-            }
+            self.group.leave()
         }
+        subscriptions = valid
+        logElapsedTime(start: subscribeStart, message: "Subscriber elapsed time")
     }
 
     open func subscribe<S: Subscriber>(_ subscriber: S) where S.State == State {
         subscribe(subscriber, scope: nil)
     }
 
+    open func subscribe<ScopedState, S: Subscriber>
+        (_ subscriber: S, scope: ((State) -> ScopedState)?) where S.State == ScopedState {
+        sync {
+            self._subscribe(subscriber, scope: scope)
+        }
+    }
+    
+    private func _subscribe<ScopedState, S: Subscriber>
+        (_ subscriber: S, scope: ((State) -> ScopedState)?) where S.State == ScopedState {
+        if subscriptions.contains(where: { $0.subscriber === subscriber }) {
+            logDebug("subscriber \(subscriber) is already registered, ignoring.")
+            return
+        }
+        let subscription = Subscription(subscriber: subscriber, scope: scope)
+        logDebug("adding subscriber \(subscription)")
+        subscriptions.append(subscription)
+        
+        group.enter()
+        mainQueue.async {
+            self.informSubscriber(subscription, previous: self.previousState, current: self.state)
+            self.group.leave()
+        }
+    }
+    
     open func unSubscribe(_ subscriber: AnyObject) {
         sync {
             if let index = self.subscriptions.index(where: { $0.subscriber === subscriber }) {
@@ -106,47 +127,37 @@ open class Store<State, RD: Reducer> where RD.State == State {
             }
         }
     }
-
+    
     private func sync(_ block: @escaping () -> Void) {
-        let sem = DispatchSemaphore(value: 0)
-        let timeout = DispatchTime.now() + .seconds(10)
+//        let sem = DispatchSemaphore(value: 0)
+//        let timeout = DispatchTime.now() + .seconds(10)
         reducerQueue.async(flags: .barrier) {
             block()
-            sem.signal()
+//            sem.signal()
         }
 
-        deadlockQueue.async {
-            if sem.wait(timeout: timeout) == .timedOut {
-                fatalError("[UDF]: Store deadlock timeout. Did a reducer dispatch an action?")
-            }
-        }
+//        deadlockQueue.async {
+//            if sem.wait(timeout: timeout) == .timedOut {
+//                fatalError("[UDF]: Store deadlock timeout. Did a reducer dispatch an action?")
+//            }
+//        }
     }
     
-    private func informSubscribers(_ previous: State?, current: State) {
-        let valid = subscriptions.filter { $0.subscriber != nil }
-
-        mainQueue.async {
-            valid.forEach {
-                self.informSubscriber($0, previous: self.previousState, current: self.state)
-            }
-            self.subscribing.signal()
-        }
-
-        subscriptions = valid
-    }
-
     private func informSubscriber(_ subscription: Subscription, previous: State?, current: State) {
-//        mainQueue.async {
-            var prev: Any? = nil
-            if let previous = previous {
-                prev = subscription.scope?(previous) ?? previous
-            }
-            let curr = subscription.scope?(current) ?? current
-            subscription.subscriber?._updateState(previous: prev, current: curr)
-//        }
+        var prev: Any? = nil
+        if let previous = previous {
+            prev = subscription.scope?(previous) ?? previous
+        }
+        let curr = subscription.scope?(current) ?? current
+        subscription.subscriber?._updateState(previous: prev, current: curr)
     }
 }
 
+private extension Store {
+    
+}
+
+// MARK: Debug 
 private extension Store {
     
     func logDebug(_ message: String) {
