@@ -33,6 +33,7 @@ open class Store<State, RD: Reducer> where RD.State == State {
         label: "com.cirrusmd.UDF.deadlockMonitoring",
         attributes: [.concurrent]
     )
+    private let subscribing = DispatchSemaphore(value: 1)
     private let mainQueue = DispatchQueue.main
 
     public init(reducer: RD, initialState: State, config: Config = Config.default) {
@@ -56,6 +57,7 @@ open class Store<State, RD: Reducer> where RD.State == State {
     }
 
     fileprivate func _dispatch(action: Action) {
+        _ = subscribing.wait(timeout: DispatchTime.distantFuture)
         logDebug("DISPATCHED ACTION: \(action)")
         
         let reduceStart = Date()
@@ -71,9 +73,7 @@ open class Store<State, RD: Reducer> where RD.State == State {
         }
 
         let subscribeStart = Date()
-        mainQueue.sync {
-            self.informSubscribers(previousState, current: newState)
-        }
+        self.informSubscribers(self.previousState, current: newState)
         logElapsedTime(start: subscribeStart, message: "Subscriber elapsed time")
     }
 
@@ -125,20 +125,25 @@ open class Store<State, RD: Reducer> where RD.State == State {
     private func informSubscribers(_ previous: State?, current: State) {
         let valid = subscriptions.filter { $0.subscriber != nil }
 
-        valid.forEach {
-            self.informSubscriber($0, previous: self.previousState, current: self.state)
+        mainQueue.async {
+            valid.forEach {
+                self.informSubscriber($0, previous: self.previousState, current: self.state)
+            }
+            self.subscribing.signal()
         }
 
         subscriptions = valid
     }
 
     private func informSubscriber(_ subscription: Subscription, previous: State?, current: State) {
-        var prev: Any? = nil
-        if let previous = previous {
-            prev = subscription.scope?(previous) ?? previous
-        }
-        let curr = subscription.scope?(current) ?? current
-        subscription.subscriber?._updateState(previous: prev, current: curr)
+//        mainQueue.async {
+            var prev: Any? = nil
+            if let previous = previous {
+                prev = subscription.scope?(previous) ?? previous
+            }
+            let curr = subscription.scope?(current) ?? current
+            subscription.subscriber?._updateState(previous: prev, current: curr)
+//        }
     }
 }
 

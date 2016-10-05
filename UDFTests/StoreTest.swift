@@ -98,14 +98,14 @@ class ReduxStoreTest: XCTestCase {
     typealias TestReduxStore = Store<CounterState, TestReducer>
     let reducer = TestReducer()
     lazy var store: TestReduxStore = {
-        return Store(reducer: self.reducer, initialState: CounterState(), config: Config(debug: true))
+        return Store(reducer: self.reducer, initialState: CounterState(), config: Config(debug: false))
     }()
     
     func test_currentState() {
-//        store.dispatch(CountAction.Increment)
-//        
-//        XCTAssertEqual(store.currentState().counter, 1)
+        store.dispatch(CountAction.Increment)
         
+        XCTAssertEqual(store.currentState().counter, 1)
+
         let exp = expectation(description: "")
         var backgroundState: CounterState?
         scheduleInBackground {
@@ -243,7 +243,7 @@ class ReduxStoreTest: XCTestCase {
             exp.fulfill()
         }
 
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 10, handler: nil)
 
         for subscriber in subscribers[1..<iters] {
 
