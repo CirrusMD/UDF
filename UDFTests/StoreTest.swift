@@ -22,17 +22,6 @@ class ReduxStoreTest: XCTestCase {
         store.dispatch(CountAction.Increment)
         
         XCTAssertEqual(store.currentState().counter, 1)
-
-        let exp = expectation(description: "")
-        var backgroundState: CounterState?
-        scheduleInBackground {
-            self.store.dispatch(CountAction.Increment)
-            backgroundState = self.store.currentState()
-            exp.fulfill()
-        }
-        waitForExpectations(timeout: 1, handler: nil)
-        
-        XCTAssertEqual(backgroundState?.counter, 2)
     }
 
     func test_dispatch_action() {
@@ -132,26 +121,11 @@ class ReduxStoreTest: XCTestCase {
     
     //MARK: Race Conditions
     
-    func test_updateState_callingCurrentState() {
-        let subscriber = TestSubscriber()
-        var state: CounterState? = nil
-        subscriber.arbitraryClosure = {
-           state = self.store.currentState()
-        }
-        subscriber.expectation = expectation(description: #function)
-        store.subscribe(subscriber)
-        waitForExpectations(timeout: 1, handler: nil)
-        
-        XCTAssertEqual(state?.counter, 0)
-        
-        subscriber.expectation = expectation(description: #function)
-        store.dispatch(CountAction.Increment)
-        waitForExpectations(timeout: 1, handler: nil)
-        
-        XCTAssertEqual(state?.counter, 1)
+    func test_callingCurrentStateSynchronouslyWithinUpdateState() {
+        /* This is not supported and will deadlock, use the asynchronous method instead */
     }
     
-    func test_updateState_subscribingWithin() {
+    func test_subscribingFromWithingUpdateState() {
         let subscriber = TestSubscriber()
         subscriber.arbitraryClosure = {
             self.store.subscribe(TestSubscriber())
@@ -165,6 +139,7 @@ class ReduxStoreTest: XCTestCase {
     }
 
     func test_subscribingFromDifferentThreads() {
+        reducer.randomSleepInterval = 50_000
         let iters = 1000
 
         let parent = UIViewController()

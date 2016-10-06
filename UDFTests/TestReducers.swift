@@ -45,8 +45,8 @@ class TestReducer: Reducer {
         didHandleAction = true
         self.state = state
         if let interval = randomSleepInterval {
-//            Double(interval) * Double(Float(arc4random()) /  Float(UInt32.max))
-            usleep(interval)
+            let randomInterval = Float(interval) * Float(arc4random()) / Float(UInt32.max)
+            usleep(UInt32(randomInterval))
         }
         expectation?.fulfill()
         return state
