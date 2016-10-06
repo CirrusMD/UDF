@@ -44,7 +44,7 @@ open class Store<State, RD: Reducer> where RD.State == State {
             sem.signal()
         }
         if sem.wait(timeout: DispatchTime.now() + .seconds(10)) == .timedOut {
-            fatalError("deadlock")
+            preconditionFailure("[UDF] Synchronously calling current state deadlocked/timed out. Was \(#function) called while a subscriber was updating state?")
         }
         return currentState
     }
