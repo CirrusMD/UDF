@@ -62,14 +62,17 @@ class ReduxStoreTest: XCTestCase {
         XCTAssertEqual(reducer.state?.counter, 1)
     }
 
-    func test_dispatch_actionCreator() {
+    func test_dispatch_actionDispatcher() {
         reducer.expectation = expectation(description: #function)
-        let creator = ActionDispatcher<CounterState> { state, dispatch in
+        var capturedState: CounterState? = nil
+        let dispatcher = ActionDispatcher<CounterState> { state, dispatch in
+            capturedState = state()
             dispatch(CountAction.Increment)
         }
-        store.dispatch(creator)
+        store.dispatch(dispatcher)
         waitForExpectations(timeout: 1, handler: nil)
 
+        XCTAssertEqual(capturedState?.counter, 0)
         XCTAssertTrue(reducer.didHandleAction)
         XCTAssertEqual(reducer.state?.counter, 1)
     }
