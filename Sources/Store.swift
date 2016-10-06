@@ -49,6 +49,12 @@ open class Store<State, RD: Reducer> where RD.State == State {
         return currentState
     }
     
+    open func currentState(completion: @escaping (State) -> Void) {
+        read {
+            completion(self.state)
+        }
+    }
+    
     open func dispatch(_ actionDispatcher: Dispatcher) {
         actionDispatcher.dispatch(currentState, dispatch)
     }

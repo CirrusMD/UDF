@@ -23,6 +23,35 @@ class ReduxStoreTest: XCTestCase {
         
         XCTAssertEqual(store.currentState().counter, 1)
     }
+    
+    func test_currentState_completion() {
+        store.dispatch(CountAction.Increment)
+        
+        var exp = expectation(description: #function)
+        var state: CounterState? = nil
+        store.currentState {
+            state = $0
+            exp.fulfill()
+        }
+        waitForExpectations(timeout: 1, handler: nil)
+        
+        XCTAssertEqual(state?.counter, 1)
+        
+        state = nil
+        exp = expectation(description: #function)
+        
+        scheduleInBackground {
+            self.store.dispatch(CountAction.Increment)
+            self.store.currentState {
+                state = $0
+                exp.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 1, handler: nil)
+        
+        XCTAssertEqual(state?.counter, 2)
+    }
 
     func test_dispatch_action() {
         reducer.expectation = expectation(description: #function)
