@@ -19,28 +19,29 @@ open class Store<State, RD: Reducer> where RD.State == State {
     public typealias GetState = () -> State
     public typealias Middleware = (@escaping GetState) -> (@escaping DispatchFunc) -> DispatchFunc
 
-    fileprivate typealias Subscription = GenericSubscription<State>
+    private typealias Subscription = GenericSubscription<State>
     
-    fileprivate var previousState: State?
-    fileprivate var state: State
+    private var previousState: State?
+    private var state: State
 
-    fileprivate let reducer: RD
-    fileprivate var subscriptions: [Subscription] = []
     fileprivate let config: Config
-    fileprivate lazy var mainDispatch: DispatchFunc = { _ in }
-    fileprivate let actionQueue = DispatchQueue(label: "com.cirrusmd.udf.action", attributes: [.concurrent])
+    private let reducer: RD
+    private var subscriptions: [Subscription] = []
+    private lazy var mainDispatch: DispatchFunc = { _ in }
+    private let actionQueue = DispatchQueue(label: "com.cirrusmd.udf.action", attributes: [.concurrent])
 
     public init(reducer: RD, initialState: State, middleware: [Middleware] = [], config: Config = Config.default) {
         self.reducer = reducer
         self.state = initialState
         self.config = config
-        self.mainDispatch = middleware
+        let debugMiddleware = config.debug ? [StateDiffLogger, DebugLogger] + middleware : middleware
+        self.mainDispatch = debugMiddleware
             .reversed()
             .reduce(_reduceState, { [unowned self] (dispatch, middleware) -> DispatchFunc in
                 return middleware({ self.state })(dispatch)
             })
     }
-
+    
     open func currentState() -> State {
         var current: State!
         let sem = DispatchSemaphore(value: 0)
@@ -62,27 +63,16 @@ open class Store<State, RD: Reducer> where RD.State == State {
         actionDispatcher.dispatch(currentState, _dispatch)
     }
 
-    fileprivate func _dispatch(action: Action) {
+    private func _dispatch(action: Action) {
         sync { [unowned self] in
             self.mainDispatch(action)
         }
     }
     
-    fileprivate func _reduceState(action: Action) {
-        self.logDebug("DISPATCHED ACTION: \(action)")
-        
-        let start = Date()
+    private func _reduceState(action: Action) {
         self.previousState = self.state
         let newState = self.reducer.handle(action: action, forState: self.state)
         self.state = newState
-        self.logElapsedTime(start: start)
-
-        if let prev = self.previousState {
-            self.logDebug(debugDiff(lhs: prev, rhs: self.state))
-        } else {
-            self.logDebug(debugDiff(lhs: "", rhs: self.state))
-        }
-
         self.informSubscribers(self.previousState, current: newState)
     }
 
@@ -112,11 +102,11 @@ open class Store<State, RD: Reducer> where RD.State == State {
         }
     }
 
-    fileprivate func sync(_ block: @escaping () -> Void) {
+    private func sync(_ block: @escaping () -> Void) {
         actionQueue.async(flags: .barrier, execute: block)
     }
 
-    fileprivate func informSubscribers(_ previous: State?, current: State) {
+    private func informSubscribers(_ previous: State?, current: State) {
         let valid = subscriptions.filter {
             return $0.subscriber != nil
         }
@@ -128,7 +118,7 @@ open class Store<State, RD: Reducer> where RD.State == State {
         subscriptions = valid
     }
 
-    fileprivate func informSubscriber(_ subscription: Subscription, previous: State?, current: State) {
+    private func informSubscriber(_ subscription: Subscription, previous: State?, current: State) {
         scheduleOnNextRunLoop {
             var prev: Any? = nil
             if let previous = previous {
@@ -146,16 +136,6 @@ private extension Store {
         if config.debug {
             print("[UDF: DEBUG]", message)
         }
-    }
-    
-    func logElapsedTime(start: Date) {
-        var duration =  abs(start.timeIntervalSinceNow) * 1000
-        var unit = "ms"
-        if duration < 1000 {
-            duration *= 1000
-            unit = "μs"
-        }
-        logDebug("Time to reduce state: \(duration) \(unit)")
     }
 }
 
