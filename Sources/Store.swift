@@ -27,14 +27,18 @@ open class Store<State, RD: Reducer> where RD.State == State {
     fileprivate let reducer: RD
     fileprivate var subscriptions: [Subscription] = []
     fileprivate let config: Config
-    fileprivate let middleware: [Middleware]
+    fileprivate lazy var mainDispatch: DispatchFunc = { _ in }
     fileprivate let actionQueue = DispatchQueue(label: "com.cirrusmd.udf.action", attributes: [.concurrent])
 
     public init(reducer: RD, initialState: State, middleware: [Middleware] = [], config: Config = Config.default) {
         self.reducer = reducer
         self.state = initialState
-        self.middleware = middleware
         self.config = config
+        self.mainDispatch = middleware
+            .reversed()
+            .reduce(_reduceState, { [unowned self] (dispatch, middleware) -> DispatchFunc in
+                return middleware({ self.state })(dispatch)
+            })
     }
 
     open func currentState() -> State {
@@ -59,23 +63,27 @@ open class Store<State, RD: Reducer> where RD.State == State {
     }
 
     fileprivate func _dispatch(action: Action) {
-        sync {
-            self.logDebug("DISPATCHED ACTION: \(action)")
-            
-            let start = Date()
-            self.previousState = self.state
-            let newState = self.reducer.handle(action: action, forState: self.state)
-            self.state = newState
-            self.logElapsedTime(start: start)
-
-            if let prev = self.previousState {
-                self.logDebug(debugDiff(lhs: prev, rhs: self.state))
-            } else {
-                self.logDebug(debugDiff(lhs: "", rhs: self.state))
-            }
-
-            self.informSubscribers(self.previousState, current: newState)
+        sync { [unowned self] in
+            self.mainDispatch(action)
         }
+    }
+    
+    fileprivate func _reduceState(action: Action) {
+        self.logDebug("DISPATCHED ACTION: \(action)")
+        
+        let start = Date()
+        self.previousState = self.state
+        let newState = self.reducer.handle(action: action, forState: self.state)
+        self.state = newState
+        self.logElapsedTime(start: start)
+
+        if let prev = self.previousState {
+            self.logDebug(debugDiff(lhs: prev, rhs: self.state))
+        } else {
+            self.logDebug(debugDiff(lhs: "", rhs: self.state))
+        }
+
+        self.informSubscribers(self.previousState, current: newState)
     }
 
     open func subscribe<ScopedState, S: Subscriber>
@@ -114,7 +122,7 @@ open class Store<State, RD: Reducer> where RD.State == State {
         }
 
         valid.forEach {
-            self.informSubscriber($0, previous: self.previousState, current: self.state)
+            informSubscriber($0, previous: self.previousState, current: self.state)
         }
 
         subscriptions = valid
