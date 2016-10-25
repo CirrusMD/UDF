@@ -44,7 +44,7 @@ open class Store<State, RD: Reducer> where RD.State == State {
     open func currentState() -> State {
         var current: State!
         let sem = DispatchSemaphore(value: 0)
-        actionQueue.async {
+        actionQueue.async { [unowned self] in
             current = self.state
             sem.signal()
         }
@@ -88,7 +88,7 @@ open class Store<State, RD: Reducer> where RD.State == State {
 
     open func subscribe<ScopedState, S: Subscriber>
         (_ subscriber: S, scope: ((State) -> ScopedState)?) where S.State == ScopedState {
-        sync {
+        sync { [unowned self] in
             if self.subscriptions.contains(where: { $0.subscriber === subscriber }) {
                 self.logDebug("\(#file): \(#function): subscriber \(subscriber) is already registered, ignoring.")
                 return
@@ -105,7 +105,7 @@ open class Store<State, RD: Reducer> where RD.State == State {
 
     open func unSubscribe(_ subscriber: AnyObject) {
         weak var weakSubscriber = subscriber
-        sync {
+        sync { [unowned self] in
             if let subscriber = weakSubscriber, let index = self.subscriptions.index(where: { $0.subscriber === subscriber }) {
                 self.subscriptions.remove(at: index)
             }
