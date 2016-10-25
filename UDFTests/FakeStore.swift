@@ -25,9 +25,9 @@ class FakeStore<State, RD: Reducer>: Store<State, RD> where RD.State == State {
         subscribers = []
     }
 
-    override init(reducer: RD, initialState: State, config: Config) {
+    override init(reducer: RD, initialState: State, middleware: [Middleware], config: Config) {
         self.state = initialState
-        super.init(reducer: reducer, initialState: initialState, config: config)
+        super.init(reducer: reducer, initialState: initialState, middleware: middleware, config: config)
     }
 
     override func currentState() -> State {
