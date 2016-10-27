@@ -16,13 +16,21 @@ public func DebugLogger<State>(state: @escaping () -> State) -> (@escaping Dispa
             
             next(action)
             
-            var duration =  abs(start.timeIntervalSinceNow) * 1000
-            var unit = "ms"
-            if duration < 1000 {
-                duration *= 1000
-                unit = "μs"
-            }
-            print(prefix, "Time to reduce state: \(duration) \(unit)")
+            let duration =  abs(start.timeIntervalSinceNow) * 1_000 // milliseconds
+            let formatted = formatter.string(from: NSNumber(value: duration)) ?? "unknown"
+            print(prefix, "Time to reduce state: \(formatted) ms")
         }
     }
 }
+
+private let formatter: NumberFormatter = {
+    let f = NumberFormatter()
+    f.numberStyle = .decimal
+    f.locale = NSLocale.current
+    f.alwaysShowsDecimalSeparator = true
+    f.minimumFractionDigits = 3
+    f.maximumFractionDigits = 3
+    f.groupingSeparator = ","
+    f.usesGroupingSeparator = true
+    return f
+}()

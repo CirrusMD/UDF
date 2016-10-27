@@ -13,7 +13,7 @@ public func StateDiffLogger<State>(state: @escaping () -> State) -> (@escaping D
             let prev = state()
             next(action)
             let current = state()
-            print("[UDF: State Diff]:\n")
+            print("[UDF: STATE DIFF]:")
             print(debugDiff(lhs: prev, rhs: current))
         }
     }
