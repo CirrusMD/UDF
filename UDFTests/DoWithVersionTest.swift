@@ -41,9 +41,13 @@ class VersionedOperationTest: XCTestCase {
         
         for (index, (key, version, expectation)) in tests.enumerated() {
             var executed = false
-            DoWithVersion(key: key, version: version, task: { 
+            let retVal = DoWithVersion(key: key, version: version, task: {
                 executed = true
             })
+            
+            if retVal != executed {
+                XCTFail("test case# \(index+1) return value: expected \(retVal), got \(executed)")
+            }
 
             if executed != expectation {
                 XCTFail("test case# \(index+1): expected \(expectation), got \(executed)")

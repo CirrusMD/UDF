@@ -8,15 +8,16 @@
 
 import Foundation
 
-public func DoWithVersion<T>(key: AnyObject, version: Version<T>, task: () -> Void) {
+@discardableResult public func DoWithVersion<T>(key: AnyObject, version: Version<T>, task: () -> Void) -> Bool {
     let trackable = TrackableKey(key)
     guard trackable.objectRef != nil else {
-        return
+        return false
     }
     guard !versionExists(trackable, version: version) else {
-        return
+        return false
     }
     task()
+    return true
 }
 
 private struct TrackableKey: Hashable {
