@@ -54,8 +54,18 @@ class TestReducer: Reducer {
 class TestSubscriber: UIViewController, Subscriber {
     typealias State = CounterState
 
+    let mutex = DispatchQueue(label: "mutex")
+
     var lastStates: [CounterState] = []
     var previousStates: [CounterState?] = []
+    private var text: String?
+    var currentText: String? {
+        var _text: String?
+        mutex.sync {
+            _text = text
+        }
+        return _text
+    }
     let label = UILabel(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
 
     var expectation: XCTestExpectation?
@@ -64,6 +74,9 @@ class TestSubscriber: UIViewController, Subscriber {
         previousStates.append(previous)
         lastStates.append(current)
         label.text = "\(current.counter)"
+        mutex.sync {
+            text = self.label.text
+        }
         expectation?.fulfill()
     }
 
@@ -149,7 +162,7 @@ class ReduxStoreTest: XCTestCase {
            let state = item {
             XCTAssertEqual(state.counter, 0)
         } else {
-            XCTFail("expected previous state, got \(subscriber.previousStates.last)")
+            XCTFail("expected previous state, got \(String(describing: subscriber.previousStates.last))")
         }
     }
 
@@ -222,7 +235,7 @@ class ReduxStoreTest: XCTestCase {
         let expected = "\(iters * 2)"
         let exp = expectation(description: #function)
         scheduleInBackground {
-            while subscribers.last?.label.text != expected {}
+            while subscribers.last?.currentText != expected {}
             exp.fulfill()
         }
 
