@@ -16,5 +16,5 @@ public struct Config {
 }
 
 extension Config {
-    static let `default` = Config(debug: false)
+    public static let `default` = Config(debug: false)
 }
