@@ -20,8 +20,8 @@ public struct Version<T> {
 }
 
 extension Version: Hashable {
-    public var hashValue: Int {
-        return uuid.hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(uuid)
     }
 }
 

@@ -10,10 +10,10 @@ import UDF
 
 
 private struct TestVersionable: Hashable {
-    let hash = NSUUID().hashValue
+    private let uuid = UUID()
 
-    var hashValue: Int {
-        return hash
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(uuid)
     }
 }
 

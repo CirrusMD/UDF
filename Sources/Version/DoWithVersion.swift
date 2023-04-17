@@ -22,16 +22,24 @@ import Foundation
 
 private struct TrackableKey: Hashable {
     weak var objectRef: AnyObject?
-    let hashValue: Int
-
+    
     init(_ objectRef: AnyObject) {
-        self.hashValue = ObjectIdentifier(objectRef).hashValue
         self.objectRef = objectRef
     }
-}
-
-private func ==(lhs: TrackableKey, rhs: TrackableKey) -> Bool {
-    return lhs.hashValue == rhs.hashValue
+    
+    func hash(into hasher: inout Hasher) {
+        guard let objectRef = objectRef else {
+            return
+        }
+        hasher.combine(ObjectIdentifier(objectRef))
+    }
+    
+    static func == (lhs: TrackableKey, rhs: TrackableKey) -> Bool {
+        guard let left = lhs.objectRef, let right = rhs.objectRef else {
+            return false
+        }
+        return left === right
+    }
 }
 
 private let mutex = DispatchQueue(label: "com.cirrusmd.UDF.versions", attributes: DispatchQueue.Attributes.concurrent)
